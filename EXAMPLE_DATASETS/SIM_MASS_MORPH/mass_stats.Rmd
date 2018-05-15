@@ -1,0 +1,49 @@
+---
+title: "Data Pre-Processor"
+author: "Peter Freeman"
+date: "5/15/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Specify the bandpass, the redshift z, and the number of statistics below.
+From these settings, this code chunk will create predictor and response data that you may subsequently analyze.
+```{r generate predictor and response data}
+set.seed(101)
+
+bandpass = "F105W"
+z        = "Z1.0"
+num.stat = 4
+
+load(paste("SUBHALO-CAMERA_",z,".Rdata",sep=""))
+
+s        = unique(subhalo)
+length.s = length(s)
+
+indices = rep(-9,length.s)
+for ( ii in 1:length.s ) {
+  w = which(subhalo==s[ii])
+  r = sample(length(w),1)-1
+  indices[ii] = w[1]+r
+}
+
+load(paste(bandpass,"_",z,"_v2.Rdata",sep=""))
+if ( num.stat == 4 ) {
+  predictors = data.frame(Gini[indices],M20[indices],C[indices],A[indices])
+  names(predictors) = c("Gini","M20","C","A")
+} else {
+  predictors = data.frame(M[indices],I[indices],D[indices],Gini[indices],M20[indices],C[indices],A[indices])
+  names(predictors) = c("M","I","D","Gini","M20","C","A")
+}
+response = mass[indices]
+
+min.val = apply(predictors,1,min)
+w = which(min.val==-9)
+if ( length(w) > 0 ) {
+  predictors = predictors[-w,]
+  response   = response[-w]
+}
+```

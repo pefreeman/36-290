@@ -63,8 +63,8 @@ The file Massive_Black_II.Rdata contains training data for
 To load these data into R Studio, do the following (once you've set the working
 directory to the one in which the data reside):
 
-&gt; load("Massive_Black_II.Rdata")&nbsp;
-&gt; objects()&nbsp;
+&gt; load("Massive_Black_II.Rdata")  
+&gt; objects()  
 [1] "pred.test"    "pred.train"   "resp.test.df"   "resp.train.df"
 
 pred.test and pred.train are data frames that contain the following columns:

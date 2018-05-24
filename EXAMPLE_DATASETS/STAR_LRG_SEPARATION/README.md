@@ -15,17 +15,8 @@ predictors for each object are
 
 | Variable        | Description                                                 |
 | --------------- | ----------------------------------------------------------- |
-| mag.{U,G,R,I,Z} | The magnitude of the object in various SDSS bandpasses; see |
-                  | https://en.wikipedia.org/wiki/Photometric_system            |
-                  | for more precise information. Basically, our eyes perceive  |
-                  | light from about 350 nm to 700 nm, and thus these bandpasses|
-                  | collect light from the near-ultraviolet through the optical |
-                  | regime to the near-infrared. Higher magnitudes mean dimmer
-|                 | objects, and it is a logarithmic scale: a change in 
-                  | magnitude of 5 corresponds to a factor of 100 in brightness.|
-| mag.{W1,W2}     | The magnitude of the object in two WISE bandpasses. WISE    |
-                    is an infrared all-sky survey instrument; W1 is at 3400 nm  |
-                    and W2 is at 4600 nm.                                       |
+| mag.{U,G,R,I,Z} | The magnitude of the object in various SDSS bandpasses; see  https://en.wikipedia.org/wiki/Photometric_system for more precise information. Basically, our eyes perceive light from about 350 nm to 700 nm, and thus these bandpasses  collect light from the near-ultraviolet through the optical regime to the near-infrared. Higher magnitudes mean dimmer objects, and it is a logarithmic scale: a change in magnitude of 5 corresponds to a factor of 100 in brightness. |
+| mag.{W1,W2}     | The magnitude of the object in two WISE bandpasses. WISE is an infrared all-sky survey instrument; W1 is at 3400 nm  and W2 is at 4600 nm. |
 
 The response variable is the spectroscopic redshift of the object, where the
 redshift, z, is defined as

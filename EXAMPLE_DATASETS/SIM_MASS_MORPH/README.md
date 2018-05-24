@@ -82,7 +82,7 @@ will have a matrix of predictors with four columns (Gini,M20,C,A)
 and a vector of responses (log10(galaxy masses), in units of solar masses).
 You can then run multiple linear regression
 
-> out = lm(response~.,data=predictors)
+&gt; out = lm(response~.,data=predictors)
 
 and interpret the results. (Note that I'm assuming you've installed R Studio.)
 

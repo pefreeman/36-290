@@ -94,12 +94,12 @@ turn, and not all at once):
 For instance, you could start your overall analysis by trying to do 
 multiple linear regression (after doing exploratory data analysis, of course):
 
-&gt; resp.train       = resp.train.df$halos.m_star&nbsp;
-&gt; resp.test        = resp.test.df$halos.m_star&nbsp;
-&gt; pred.train.small = pred.train[,1:5]  # first five columns&nbsp;
-&gt; pred.test.small  = pred.test[,1:5] &nbsp;
-&gt; lm.out           = lm(resp.train~.,data=pred.train.small)&nbsp;
-&gt; resp.test.hat    = predict(lm.out,newdata=pred.test.small)&nbsp;
+&gt; resp.train       = resp.train.df$halos.m_star  
+&gt; resp.test        = resp.test.df$halos.m_star  
+&gt; pred.train.small = pred.train[,1:5]  # first five columns  
+&gt; pred.test.small  = pred.test[,1:5]   
+&gt; lm.out           = lm(resp.train~.,data=pred.train.small)  
+&gt; resp.test.hat    = predict(lm.out,newdata=pred.test.small)  
 &gt; mse              = mean((resp.test-resp.test.pred)^2)
 
 The last line defines the mean-squared error: this is the metric you will use

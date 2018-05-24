@@ -13,6 +13,8 @@ an object is a star or an LRG, for instance?
 The dataset consists of two variables, predictors and response. The
 predictors for each object are
 
+| Variable        | Description                                                 |
+| --------------- | ----------------------------------------------------------- |
 | mag.{U,G,R,I,Z} | The magnitude of the object in various SDSS bandpasses; see |
                   | https://en.wikipedia.org/wiki/Photometric_system            |
                   | for more precise information. Basically, our eyes perceive  |

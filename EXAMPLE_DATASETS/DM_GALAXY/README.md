@@ -63,45 +63,52 @@ The file Massive_Black_II.Rdata contains training data for
 To load these data into R Studio, do the following (once you've set the working
 directory to the one in which the data reside):
 
-> load("Massive_Black_II.Rdata")
-> objects()
+&gt; load("Massive_Black_II.Rdata")
+
+&gt; objects()
+
 [1] "pred.test"    "pred.train"   "resp.test.df"   "resp.train.df"
 
 pred.test and pred.train are data frames that contain the following columns:
 
-halos.vdisp - the velocity dispersion for the halos, i.e., the standard
-              deviation of the velocities of their constituent particles
-halos.vcirc - maximum circular velocities for the halos, which you can think of
-              as "how fast the halos spin"
-halos.rcirc - the distance from the center of the halo where the maximum
-              circular velocity is achieved
-halos.m_dm  - the dark matter mass
-r_parent    - the distance from the halo to the center of its parent halo
-shapesDM.q3d - the halos may be thought of as ellipsoids with axes a, b, and c.
-               This variable is b/a.
-shapesDM.s3d - this is c/a
-thetaTid    - misalignment angle of halo (details not important here)
-phiTid      - similar to thetaTid
+| Name | Description |
+| ---- | ----------- |
+| halos.vdisp | the velocity dispersion for the halos, i.e., the standard deviation of the velocities of their constituent particles |
+| halos.vcirc | maximum circular velocities for the halos, which you can think of as "how fast the halos spin" |
+| halos.rcirc | the distance from the center of the halo where the maximum circular velocity is achieved |
+| halos.m_dm | the dark matter mass |
+| r_parent | the distance from the halo to the center of its parent halo |
+| shapesDM.q3d | the halos may be thought of as ellipsoids with axes a, b, and c. This variable is b/a. |
+| shapesDM.s3d | this is c/a |
+| thetaTid | misalignment angle of halo (details not important here) |
+| phiTid | similar to thetaTid |
 
 resp.test.df and resp.train.df are data frames that contain three different
 response variables (to be clear: we will look at each response variable in
 turn, and not all at once):
 
-halos.m_star - stellar mass of galaxy in the halo
-prop.sfr     - star-formation rate within the halo
-prop.btr     - the bulge-to-total size ratio of the galaxy (0 = a flat disk,
-               1 = a 3D ellipsoid with no disk, in between = a mix)
+| Name | Description |
+| ---- | ----------- |
+| halos.m_star | stellar mass of galaxy in the halo |
+| prop.sfr     | star-formation rate within the halo |
+| prop.btr     | the bulge-to-total size ratio of the galaxy (0 = a flat disk, 1 = a 3D ellipsoid with no disk, in between = a mix) |
 
 For instance, you could start your overall analysis by trying to do 
 multiple linear regression (after doing exploratory data analysis, of course):
 
-> resp.train       = resp.train.df$halos.m_star
-> resp.test        = resp.test.df$halos.m_star
-> pred.train.small = pred.train[,1:5]  # first five columns
-> pred.test.small  = pred.test[,1:5] 
-> lm.out           = lm(resp.train~.,data=pred.train.small)
-> resp.test.hat    = predict(lm.out,newdata=pred.test.small)
-> mse              = mean((resp.test-resp.test.pred)^2)
+&gt; resp.train       = resp.train.df$halos.m_star
+
+&gt; resp.test        = resp.test.df$halos.m_star
+
+&gt; pred.train.small = pred.train[,1:5]  # first five columns
+
+&gt; pred.test.small  = pred.test[,1:5] 
+
+&gt; lm.out           = lm(resp.train~.,data=pred.train.small)
+
+&gt; resp.test.hat    = predict(lm.out,newdata=pred.test.small)
+
+&gt; mse              = mean((resp.test-resp.test.pred)^2)
 
 The last line defines the mean-squared error: this is the metric you will use
 to determine the quality of fit of different models, and determine which 

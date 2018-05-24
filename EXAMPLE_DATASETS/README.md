@@ -8,6 +8,7 @@ should be needed prior to EDA, etc.)
 Questions? pfreeman AT cmu DOT edu
 
 15 May 2018: DM_GALAXY and SIM_MASS_MORPH added.
+
 24 May 2018: DRACO and STAR_LRG_SEPARATION added.
 
 Check back, as datasets will be added throughout Summer 2018.

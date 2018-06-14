@@ -86,7 +86,7 @@ for Class 4, RRab.)
 To read the data into an <tt>R</tt> data frame, install the feather package 
 and do:
 
-&gt; library(feather)
+&gt; library(feather)</br>
 &gt; data = data.frame(read_feather("./css_data.feather"))
 
 (If you are comfortable with tibbles, just use <tt>read_feather()</tt> 
@@ -112,8 +112,8 @@ to keep things simple as you play with classification algorithms, perhaps
 try to predict Class 1 vs. Classes 2-17. If you go that route, you should
 do something like the following:
 
-&gt; predictors = data[,1:17]
-&gt; response   = data[,18]
+&gt; predictors = data[,1:17]</br>
+&gt; response   = data[,18]</br>
 &gt; response[response>1] = 0
 
 Onwards to exploratory data analysis and then to, e.g., logistic regression 

@@ -11,7 +11,7 @@ Questions? pfreeman AT cmu DOT edu
 
 24 May 2018: DRACO and STAR_LRG_SEPARATION added.
 
-14 Jun 2018: TD_CLASS added.
+14 Jun 2018: TD_CLASS and PHOTO_MORPH added.
 
 Check back, as datasets will be added throughout Summer 2018.
 

@@ -1,0 +1,13 @@
+
+Modeling the Radial Alignment of Cluster Satellite Galaxies Towards Cluster Centers
+
+---
+
+This dataset was the basis of the 2018 paper <i>Intrinsic Alignment in redMaPPer Clusters - II. Radial Alignment of Satellites Towards Cluster Centres</i> by CMU graduate student Hung-Jin Huang and others (available at http://adsabs.harvard.edu/abs/2018MNRAS.474.4772H).
+
+Underlying this paper is the concept of <i>weak lensing</i>. According to Albert Einstein's General Theory of Relativity, spacetime is distorted in the presence of mass, leading to effects like the bending of light rays that pass sufficiently close to massive objects. Strong gravitational lensing can create multiple instances of the same background object on the sky, but weak lensing is, as its name implies, weak. In weak lensing, the effect of the foreground mass is to make it appear as though background sources are systematically aligned towards it, as opposed to having random alignments. So, in order to estimate the effect of weak lensing, we check for systematic alignments of galaxies...but, whoops, there are cases where non-random alignments happen <i>anyway</i>, complicating our analyses. Galaxy clusters are the most massive gravitationally bound structures in the Universe, and thus they act as lenses for background galaxies (and cause the appearance of alignments). But the galaxies <i>within</i> clusters will actually possess so-called "intrinsic alignments," wherein they "point" towards the cluster center. So if you have a mix of background galaxies with lensed alignments, and cluster galaxies with intrinsic alignments, and you only really care about the former, and you are not sure where a given galaxy actually <i>is</i> (behind the cluster? in the cluster?)...gah, things get complicated.
+
+Hung-Jin's paper was about her attempt to model satellite galaxy alignment angles (see Figure 1 of the paper for more intuition) as a function of 17 predictor variables. In the dataset (Satellite_Alignment.csv or .Rdata), those predictor variables are denoted with a leading <tt>N_</tt>. (Satellite galaxy alignment angle is <tt>sat_align_ang</tt>.) A description of each variable is given in Table 2 of the paper; we will not attempt to recreate the table here. (For non-astronomers, the descriptions are rather obtuse!) The last variable of interest is <tt>Pmem</tt>, which is the estimated probability that a galaxy actually lies within the cluster. Hung-Jin's dataset of 174,180 galaxies all have <tt>Pmem</tt> greater than 0.55. If you wish to weight individual observations, this is the variable to use to define the weights.
+
+Go forth and analyze!
+

@@ -6,5 +6,5 @@ needed prior to EDA, etc.)
 
 Questions? pfreeman AT cmu DOT edu
 
-5 Jul 2018: BUZZARD added.
+5 Jul 2018: BUZZARD and SAT_ALIGN added.
 

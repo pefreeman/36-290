@@ -13,5 +13,7 @@ Questions? pfreeman AT cmu DOT edu
 
 14 Jun 2018: TD_CLASS and PHOTO_MORPH added.
 
+5 Jul 2018: MDR added.
+
 Check back, as datasets will be added throughout Summer 2018.
 

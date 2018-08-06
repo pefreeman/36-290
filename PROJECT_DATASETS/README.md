@@ -8,3 +8,4 @@ Questions? pfreeman AT cmu DOT edu
 
 5 Jul 2018: BUZZARD and SAT_ALIGN added. STAR_LRG_SEPARATION added from EXAMPLE_DATASETS.
 
+6 Aug 2018: Added EMLINE_MASS. This completes the set of four project datasets.

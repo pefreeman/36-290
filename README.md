@@ -1,10 +1,11 @@
 
-Introduction to Statistical Research Methodology
----
-
 This course is designed to introduce statistical research methodology--the procedures by which statisticians go about approaching and analyzing data--to early undergraduates. Students will learn basic concepts of statistical learning--inference vs. prediction, supervised vs. unsupervised learning, regression vs. classification, etc.--and will reinforce this knowledge by applying, e.g., linear regression, random forest, principal components analysis, and/or hierarchical clustering and more to datasets provided by the instructor. Students will also practice disseminating the results of their analyses via oral presentations and posters. Analyses will primarily be carried out using the `R` programming language, but with attention paid to how one would perform similar analyses using Python. Previous knowledge of `R` is not required for this course. Space is very limited; there will be an application process. The course is currently open to sophomore statistics students only.
 
 Preliminary Schedule: Fall 2019
+
+Tu-Th 1:30 - 2:50 PM
+
+Wean 4625
 
 | Week | Day | Topic |
 | ---- | --- | ----- |

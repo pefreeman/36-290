@@ -25,8 +25,8 @@ CONFIRMED (really an exoplanet), CANDIDATE (still not sure), or
 FALSE POSITIVE (not really an exoplanet). 
 
 The dataset in this directory contains 
-18 measurements for each of 9177 KOIs. The measurements fall into four
-general groups:
+18 measurements for each of 9177 KOIs (or *Kepler* Objects of Interest). 
+The measurements fall into four general groups:
 
 | type | variables (all preceded with "koi_") |
 | ---- | --------- |

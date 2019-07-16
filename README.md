@@ -31,8 +31,8 @@ Fall 2019, Tu-Th 1:30 - 2:50 PM, Wean 4625
 |      | Th  | TBD |
 | 12   | Tu  | TBD |
 |      | Th  | reserved for project dataset work |
-| 13   | Tu  | boosting + lab |
-|      | Th  | naive bayes + lab |
+| 13   | Tu  | hackathon preliminaries |
+|      | Th  | hackathon presentations |
 | 14   | Tu  | cancelled: Thanksgiving |
 |      | Th  | cancelled: Thanksgiving |
 | 15   | Tu  | oral presentations |

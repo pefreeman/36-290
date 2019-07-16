@@ -21,8 +21,8 @@ brightnesses of each star as a function of time) identified "objects of
 interest," i.e., stars with possible exoplanets.
 The *Kepler* observations, along with observations made independently,
 were used to take these objects of interest and classify them as
-CONFIRMED (really an exoplanet), CANDIDATE (still not sure), or
-FALSE POSITIVE (not really an exoplanet). 
+`CONFIRMED` (really an exoplanet), `CANDIDATE` (still not sure), or
+`FALSE POSITIVE` (not really an exoplanet). 
 
 The dataset in this directory contains 
 18 measurements for each of 9177 KOIs (or *Kepler* Objects of Interest). 
@@ -39,7 +39,7 @@ The definition of each measurement is given
 [on this web page](https://exoplanetarchive.ipac.caltech.edu/docs/API_kepcandidate_columns.html).
 
 Research question: can you train a classifier that can effectively 
-differentiate between CONFIRMED and FALSE POSITIVE exoplanetary candidates?
-Once you have done this, apply your model to the CANDIDATE data to inform
+differentiate between `CONFIRMED` and `FALSE POSITIVE` exoplanetary candidates?
+Once you have done this, apply your model to the `CANDIDATE` data to inform
 NASA which candidates are most worthy of followup, independent observations.
 

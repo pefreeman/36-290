@@ -1,0 +1,119 @@
+---
+title: "Subset Selection: Examples"
+author: "Peter Freeman"
+date: "Summer 2019"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+Regression Example
+===
+
+```{r}
+load(url("https://raw.githubusercontent.com/pefreeman/36-290/master/EXAMPLE_DATASETS/PHOTO_MORPH/photo_morph.Rdata"))
+```
+The `load()` function places two stored variables into the global environment: <tt>predictors</tt>, a data frame with 16 measurements for each of 3,419 galaxies, and <tt>response</tt>, a vector with 3,419 redshifts (i.e., metrics of physical distance).
+```{r}
+set.seed(404)
+train = sample(nrow(predictors),0.7*nrow(predictors))
+pred.train = predictors[train,]
+pred.test  = predictors[-train,]
+resp.train = response[train]
+resp.test  = response[-train]
+```
+
+Regression Example
+===
+
+Note: the `leaps` package is only to be used for linear regression. For logistic regression, use `bestglm`.
+```{r}
+if ( require(leaps) == FALSE ) {
+  install.packages("leaps",repos="https://cloud.r-project.org")
+  library(leaps)
+}
+out.reg = regsubsets(resp.train~.,pred.train,nvmax=ncol(pred.train))
+summary(out.reg)
+```
+
+Regression Example
+===
+
+```{r fig.height=4,fig.width=4,fig.align="center"}
+library(ggplot2)
+s = summary(out.reg)
+df = data.frame(1:16,s$cp,s$bic)
+names(df) = c("num.var","Cp","BIC")
+ggplot(data=df,mapping=aes(x=num.var,y=Cp)) + geom_point() + geom_line() + ylim(0,100)
+coef(out.reg,11)
+ggplot(data=df,mapping=aes(x=num.var,y=BIC)) + geom_point() + geom_line() + ylim(-2300,-2100)
+```
+
+Regression Example
+===
+
+```{r fig.height=4,fig.width=4,fig.align="center"}
+ggplot(data=df,mapping=aes(x=num.var,y=BIC)) + geom_point() + geom_line() + ylim(-2300,-2100)
+coef(out.reg,9)
+```
+
+Regression Example
+===
+
+One sub-optimal aspect of the `leaps` package is that it does not include a predict function. Here we recreate the `predict.regsubsets()` function that James et al. create for *Introduction to Statistical Learning*:
+```{r}
+predict.regsubsets = function(object,form,newdata,k) {
+  form  = as.formula(form)
+  mat   = model.matrix(form,newdata)
+  coefi = coef(object,id=k)
+  xvars = names(coefi)
+  mat[,xvars]%*%coefi
+}
+resp.pred = predict.regsubsets(out.reg,"resp.test~.",pred.test,9)  # Predictions for BIC
+mean((resp.pred-resp.test)^2)
+```
+
+Classification Example
+===
+
+The dataset that we read in below contains magnitude and redshift data for 500 quasars and 500 stars. The idea is to learn a classifier that can discriminate between quasars and stars with a low misclassification rate.
+```{r}
+df = read.csv("https://raw.githubusercontent.com/pefreeman/PSU_2019/master/StarQuasar.csv")
+dim(df)
+names(df)
+names(df)[8] = "y"                                           # necessary tweak for bestglm: response is "y"
+set.seed(202)
+s = sample(nrow(df),0.7*nrow(df))
+data.train = df[s,c(1:5,8)]                                  # don't include redshift or redshift error!
+data.test  = df[-s,c(1:5,8)]
+```
+
+Classification Example
+===
+
+The `bestglm` package functions are more straightforward to use than `leaps` package functions, in that if you name your metric (e.g., "BIC" or "AIC") ahead of time, it will generate details on the best model for you. However, for logistic regression one is limited to $p \leq 15$ in an exhaustive search (the default) due to computational reasons.
+```{r}
+if ( require(bestglm) == FALSE ) {
+  install.packages("bestglm",repos="http://cloud.r-project.org")
+  library(bestglm)
+}
+out.glm = bestglm(data.train,family=binomial,IC="BIC")
+out.glm$BestModel                                      # $Subsets shows results for all k=1,p
+```
+
+Classification Example
+===
+
+Like `leaps`, `bestglm` does not include a generic predict function. Here we create our own:
+```{r}
+predict.bestglm = function(object,data.train,data.test) {
+  form  = formula(object$BestModel$terms)
+  out.log = glm(form,data=data.train,family=binomial)
+  return(predict(out.log,newdata=data.test,type="response"))
+}
+resp.prob = predict.bestglm(out.glm,data.train,data.test)
+resp.pred = ifelse(resp.prob>0.5,"STAR","QSO")
+mean(resp.pred!=data.test$y)
+table(resp.pred,data.test$y)
+```
+

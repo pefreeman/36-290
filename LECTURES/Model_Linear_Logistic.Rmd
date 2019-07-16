@@ -1,0 +1,81 @@
+---
+title: "Logistic Regression"
+author: "Peter Freeman"
+date: "Summer 2019"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+The Setting
+===
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Figure_4.2.png){width=80%}</center>
+
+(Figure 4.2, *Introduction to Statistical Learning* by James et al.)
+
+- To the left is a linear regression fit. It is not limited to lie within the range [0,1].
+
+- To the right is a logisitic regression fit.
+
+Generalized Linear Models
+===
+
+Having discussed linear regression, it makes sense to first step back and look at generalized linear models (or GLMs) and then look at one particular example of a generalized linear model: *logistic regression*.
+
+In conventional linear regression, we estimate the mean value of the response variable $Y$, given predictor variables $X_1,\ldots,X_p$:
+$$
+E[Y|X] = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n \,.
+$$
+In a generalized linear model, we include a "link function" $g$ that takes the linear model and transforms it:
+$$
+g(E[Y|X]) = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n \,.
+$$
+One uses the link function to reduce the range of possible values for $E[Y \vert X]$ from $(-\infty,\infty)$ to, e.g., [0,1] or $[0,\infty)$, etc. 
+
+In addition, in a GLM you specify a "family," or the distribution that governs the observed response values. For instance, if the observed response values are zero and the positive integers, the family could be "Poisson." If they are just 0 and 1, the family is "binomial." Etc.
+
+Logistic Regression
+===
+
+For logistic regression, a conventional choice of link function is the *logit* function:
+$$
+\log\left[\frac{E[Y \vert X]}{1-E[Y \vert X]}\right] = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n \,,
+$$
+so that
+$$
+E[Y \vert X] = \frac{e^{\beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n}}{1 + e^{\beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n}} \,.
+$$
+
+Assuming that we are dealing with two classes, the possible observed values for $Y$ are 0 and 1, so the family is `binomial`, i.e.,
+$$
+Y \vert X \sim {\rm Binomial}(n=1,p=E[Y\vert X]) \,.
+$$
+
+A major difference between linear and logistic regression is that the latter involves numerical optimization, i.e., instead of plugging into a formula, you have to use an iterative algorithm to find the $\beta$'s that maximize the likelihood function:
+$$
+\left( \prod_{i: Y_i=1} E[Y \vert X_i] \right) \left( \prod_{i: Y_i=0} (1 - E[Y \vert X_i]) \right) \,.
+$$
+Numerical optimization means the logistic regression runs more slowly than linear regression.
+
+Logistic Regression: Inference
+===
+
+A major motivating factor underlying the use of logistic regression, and indeed all generalized linear models, is that one can perform inference...e.g., how does the response change when we change a predictor by one unit?
+
+For linear regression, the answer to the question posed above is straightforward.
+
+For logistic regression, it is a little less straightforward, because the predicted response varies non-linearly with the predictor variable values. One convention is to fall back upon the concept of "odds."
+
+Let's say that the predicted response is 0.8 given a particular predictor variable value. (For simplicity, let's assume we have just one predictor variable.) That means that we expect that if we were to repeatedly sample response values given that predictor variable values, we would expect class 1 to appear four times as often as class 0:
+$$
+O = \frac{E[Y \vert X]}{1-E[Y \vert X]} = \frac{0.8}{1-0.8} = 4 = e^{\beta_0+\beta_1X} \,.
+$$
+Thus we say that for the given predictor variable value, the odds $O$ are 4 (or 4-1) in favor of class 1.
+
+How does the odds change if I change the value of a predictor variable by one unit?
+$$
+e^{\beta_0+\beta_1(X+1)} = e^{\beta_0+\beta_1X}e^{\beta_1} = e^{\beta_1}O \,.
+$$
+For every unit change in $X$, the odds change by a factor $e^\beta_1$.
+

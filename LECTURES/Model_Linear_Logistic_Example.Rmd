@@ -1,0 +1,38 @@
+---
+title: "Logistic Regression: Example"
+author: "Peter Freeman"
+date: "Summer 2019"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+Example
+===
+
+The dataset that we read in below contains magnitude and redshift data for 500 quasars and 500 stars. The idea is to learn a classifier that can discriminate between quasars and stars with a low misclassification rate.
+```{r}
+df = read.csv("https://raw.githubusercontent.com/pefreeman/PSU_2019/master/StarQuasar.csv")
+dim(df)
+names(df)
+set.seed(202)
+s = sample(nrow(df),0.7*nrow(df))
+pred.train = df[s,1:5]                                  # don't include redshift or redshift error!
+pred.test  = df[-s,1:5]
+resp.train = df[s,8]
+resp.test  = df[-s,8]
+```
+
+Example
+===
+
+To more fully understand the output below, it helps to know that `R` by default orders factor variables in alphabetical order: `QSO` comes before `STAR`, so `QSO` == 0 and `STAR` == 1. You can override this default behavior and provide your own ordering if you wish to.
+```{r}
+out.log = glm(resp.train~.,data=pred.train,family=binomial)
+resp.prob = predict(out.log,newdata=pred.test,type="response")
+resp.pred = ifelse(resp.prob>0.5,"STAR","QSO")
+mean(resp.pred!=resp.test)
+table(resp.pred,resp.test)
+```
+We observe a 15% misclassification rate, with stars being misidentified as QSOs roughly as often as QSOs are misidentified as stars.
+

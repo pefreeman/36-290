@@ -1,0 +1,57 @@
+---
+title: "Random Forest"
+author: "Peter Freeman"
+date: "Summer 2019"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+Motivation
+===
+
+We have previously learned about decision trees. While trees are interpretable, they do have issues:
+
+- They are highly variable. For instance, if you split a dataset in half and grow trees for each half, they can look very different.
+- (Related:) They do not generalize as well as other models, i.e., they tend to have higher test-set MSE values.
+
+To counteract these issues, one can utilize *bootstrap aggregation*, or *bagging*. Let's break this down:
+
+- bootstrap: sample the training data *with replacement*
+- aggregation: aggregate many trees, each constructed with a different bootstrap sample of the original training set
+
+Bagging: Algorithm
+===
+
+```
+Specify number of trees: n
+
+For each tree 1->n:
+  - construct a bootstrap sample from the training data
+  - grow a deep and unpruned tree (i.e., overfit!)
+  
+Pass test datum through all n trees:
+  - if regression: overall prediction is average of those for each tree
+  - if classification: by default, predicted class for each tree is the
+                       most represented class in the leaf; overall prediction
+                       is majority vote
+```
+
+Bagging improves prediction accuracy at the expense of interpretability: one can "read" a single tree, but if you have 500 trees, what can you do? 
+
+$\Rightarrow$ You can use a metric dubbed *variable importance*, which is the average improvement in, e.g., RSS or Gini when splits are made on a particular predictor variable. The larger the average improvement, the more important the predictor variable.
+
+Random Forest: Algorithm
+===
+
+The random forest algorithm *is* the bagging algorithm, with a tweak.
+
+For each bootstrapped sampled dataset, we randomly select a subset of the predictor variables, and we build the tree using only those variables. By default, $m = \sqrt{p}$. (If $m = p$, then we recover the bagging algorithm.)
+
+$\Rightarrow$ Selecting a variable subset for each tree allows us to get around the issue that if there is a dominant predictor variable, the first split is (almost always) made on that predictor variable. (Subsetting acts to "decorrelate" the different trees.)
+
+Random Forest: Variable Importance
+===
+
+Add by folding in material from RF_VarImp file.
+

@@ -1,0 +1,83 @@
+---
+title: "Support Vector Machines: Example"
+author: "Peter Freeman"
+date: "Summer 2019"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+Example
+===
+
+Below we load in some variable star data. Much of the detail is unimportant, and so is consigned to an "unechoed" code chunk. (You can see the contents of this chunk if you view the contents of the `R Markdown` file. There are two important things to note: (1) in SVM, it is convention to standardize each predictor variable, and (2) the library that we use demands that the predictor and response variables be bound into a single data frame.)
+
+The data represent two classes: contact binary stars (or `CB`s) and non-contact binary stars (or `NON-CB`s). In pre-processing, we retain 500 examples of each, for computational efficiency. (Remember: SVM is a relatively slow modeling algorithm.) The research question is: can we learn a model that discriminates between the two classes?
+```{r echo=FALSE}
+load(url("https://raw.githubusercontent.com/pefreeman/36-290/master/EXAMPLE_DATASETS/TD_CLASS/css_data.Rdata"))
+# Eliminate the max.slope column (the 11th column), which has infinities.
+predictors = predictors[,-11]
+# Cut the CB and NON-CB class sizes to 5000 samples each.
+set.seed(303)
+w = which(response==1)
+s = sample(length(w),500)
+predictors.cb = predictors[w[s],]
+response.cb   = response[w[s]]
+w = which(response!=1)
+s = sample(length(w),500)
+predictors.noncb = predictors[w[s],]
+response.noncb   = response[w[s]]
+predictors = rbind(predictors.cb,predictors.noncb)
+response   = c(response.cb,response.noncb)
+response.new = rep("CB",length(response))
+w = which(response!=1)
+response.new[w] = "NON-CB"
+response = factor(response.new,levels=c("NON-CB","CB"))
+```
+```{r}
+predictors = data.frame(scale(predictors)) # point 1 above
+df = cbind(predictors,response)            # point 2 above
+
+set.seed(101)
+s = sample(nrow(df),round(0.7*nrow(df)))
+df.train = df[s,]
+df.test  = df[-s,]
+```
+
+Linear Kernel
+===
+
+The implementation of SVM that we will examine is packaged in the enigmatically named <tt>e1071</tt> library. (Its name comes from the coding for the Institute of Statistics and Probability Theory at the Technische Universitat Wien, in Vienna. It's like us calling a package <tt>cmustats</tt>. Which we should.) Below, we code a support vector classifier (meaning, we use <tt>kernel="linear"</tt>). We use the `tune()` function with a representative sequence of potential costs $C$, then we extract the best model. (`tune()` performs 10-fold CV by default. To change the number of folds or other constants governing the implementation of CV, use the `tune.control()` function.)
+
+Note: there is a tradeoff between computational efficiency and how finely spaced the cost grid is!
+```{r}
+library(e1071)
+
+set.seed(202)  # why? because tune() does cross-validation on the training set, so random sampling is involved!
+C = 10^seq(-2,2,by=0.2)
+out.svmcv = tune(svm,response~.,data=df.train,kernel="linear",
+                 ranges=list(cost=C),tunecontrol=tune.control(cross=5))
+cat("The estimated optimal value for C is ",as.numeric(out.svmcv$best.parameters),"\n")
+resp.pred = predict(out.svmcv$best.model,newdata=df.test)
+mean(resp.pred!=df.test$response)
+table(resp.pred,df.test$response)
+```
+
+Radial Kernel
+===
+
+Implementing a radial kernel means there are two changes: `kernel` is set to `radial` (easy), and an additional tuning parameter, `gamma`, is added to the list of tuning parameters (also easy, but defining a good range of values to try can take a little time).
+```{r}
+set.seed(202)
+C = 10^seq(-2,2,by=0.4)
+g = 10^seq(-2,2,by=0.4)
+out.svmcv = tune(svm,response~.,data=df.train,kernel="radial",
+                 ranges=list(cost=C,gamma=g),tunecontrol=tune.control(cross=5))
+cat("The estimated optimal values for C and gamma are ",as.numeric(out.svmcv$best.parameters),"\n")
+resp.pred = predict(out.svmcv$best.model,newdata=df.test)
+mean(resp.pred!=df.test$response)
+table(resp.pred,df.test$response)
+```
+For these particular data, moving from SVC to radial SVM does not lead to a substantial improvement in test set MSE!
+
+An exercise left to the reader: what about a polynomial kernel? (Note that the tuning parameters are `cost` and `degree`.)

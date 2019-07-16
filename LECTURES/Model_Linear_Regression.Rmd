@@ -1,0 +1,99 @@
+---
+title: "Linear Regression"
+author: "Peter Freeman"
+date: "Summer 2019"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+The Setting
+===
+
+We have a collection of $p$ measurements for each of $n$ objects $X_1,\ldots,X_n$. (For instance, each object could be a person.) For any given object $i$, we have measurements
+$$
+X_{i,1},...,X_{1,p} \sim P
+$$
+where $P$ is some $p$-dimensional distribution that, in real-world settings, we know little-to-nothing about *a priori*. (Perhaps $p$ = 2, and variable 1 is height, and variable 2 is weight.)
+
+For each object we have an additional measurement $Y_i \sim Q$, where $Q$ is a univariate distribution (e.g., the normal distribution). (Perhaps this is how far a person has thrown a tennis ball in an experiment.)
+
+In linear regression, we assume that $Y$ is related to the variables $X$ via the model
+$$
+Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p + \epsilon
+$$
+where $\epsilon$ represents the scatter of data around the regression line; it is a random variable that is assumed to be normally distributed with mean zero and constant covariance matrix $\Sigma$.
+
+Linear Regression: Why Use It?
+===
+
+1. It is inflexible, but readily interpretable. (If a person's height changes by one unit, the distance that he or she has thrown a tennis ball changes by $\beta_1$ units, on average.) Note that it is not necessarily the case that there is an *a priori* belief that the $X$'s and $Y$ are exactly linearly related.
+
+2. It is a fast model to learn: the $\beta$'s can be computed via formula, as opposed to via slower numerical optimization.
+
+Linear Regression: Basic Points to Remember
+===
+
+1. It estimates a conditional mean:
+$$
+E[Y \vert X_1,\cdots,X_p]
+$$
+i.e., the average value of $Y$ *given* values $X_1,\cdots,X_p$.
+
+2. If the $X$'s are measured with uncertainty, then the estimates of the $\beta$'s become *biased*, i.e., they differ on average from the true value, and approach zero as the uncertainties increase.
+
+Linear Regression: Output
+===
+
+The output of linear regression are estimates of coefficients, estimates of uncertainty for those coefficients, and $p$ values (i.e., `Pr(>|t|)` in the output below).
+```{r}
+set.seed(303)
+x = 1:10
+y = x + rnorm(10,sd=0.5)
+out.lm = lm(y~x)
+summary(out.lm)
+```
+In this simple example, the coefficient for variable $x$ is estimated to be 0.996, and the estimated probability that one would observe a value of 0.996 or larger (or -0.996 or smaller) is $1.45 \times 10^{-8}$. Since this is less than the conventional decision threshold of 0.05, we conclude that the true value of the coefficient is not zero, i.e., there is a significant association between $x$ and $y$.
+
+Linear Regression: Output
+===
+
+Caveats to keep in mind regarding $p$ values:
+
+1. If the true value of a coefficient $\beta_i$ is equal to zero, then the $p$ value is sampled from a Uniform(0,1) distribution (i.e., it is just as likely to have value 0.45 as 0.16 or 0.84). Thus there's a 5% chance that you'll conclude there's a significant association between $x$ and $y$ even when there is none.
+
+2. As the sample size $n$ gets large, the estimated coefficient uncertainty goes to zero, and *all* predictors are eventually deemed significant.
+
+$\Rightarrow$ While the $p$ values might be informative, use variable selection methods (covered elsewhere) to determine which subset of the predictors should be included in your final model.
+
+Linear Regression: Output
+===
+
+In addition to the $p$ values, you will note in the example output a value dubbed "Adjusted R-squared" (which has value 0.983). The adjusted $R^2$ has a value between 0 and 1 and is an estimate of the proportion of the variance of the data along the $y$-axis explained by the linear regression model. Adjusted $R^2$ provides intuition as to how good a linear model fits to the data, as opposed to the mean-squared error.
+```{r fig.height=6,fig.width=6,fig.align="center"}
+library(ggplot2)
+df = data.frame(x,y,predict(out.lm))
+names(df) = c("x","y","y.pred")
+ggplot(data=df,mapping=aes(x=x,y=y)) + geom_point() + geom_point(mapping=aes(x=x,y=y.pred),color="red") +
+  geom_line(mapping=aes(x=x,y=y.pred),linetype="dashed",color="red")
+cat("Variance of y = ",var(y),"  Variance of predicted y = ",var(df$y.pred),"  Raw R^2 = ",var(df$y.pred)/var(y),"\n")
+```
+
+Linear Regression: Other Points to Keep In Mind
+===
+
+A proper discussion of each of the points given below could span one or more lectures in a conventional regression class! Here we just mention them, as caveats.
+
+1. You may find it useful to transform your variables. (For instance, a distribution of values that is highly skew may be much less so if you transform them logarithmically.) Keep this in mind as you perform EDA.
+
+2. Outliers may adversely affect your regression estimates. In a linear regression setting, outliers may be identified via the "Cook's distance." We offer no general heuristic regarding how to deal with outliers, other than you should scrupulously document how you deal with them!
+
+3. Beware collinearity! Collinearity is when one predictor variable is linearly associated with another. Collinearity is not necessarily harmful outside a linear regression setting, but must be dealt with in linear regression analyses. The general process is to perform the linear regression fit, compute the "variance inflation factor" via the `vif()` function in the `car` package, remove a variable if its vif is greater than 5, and repeat the fitting process until no more variables are to be removed.
+
+Last Point: Do I Really Need to Split My Data?
+===
+
+If your entire analysis workflow involves fitting one linear regression model to your data, there is no need to split your data into training and test datasets. Just learn the model, and interpret it.
+
+However, if you intend to learn multiple models (e.g., linear regression, a regression tree, random forest), then you should estimate the $\beta$'s using only the training data and you should generate predictions and compute the MSE using the test data.
+

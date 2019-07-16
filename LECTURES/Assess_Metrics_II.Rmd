@@ -1,0 +1,149 @@
+---
+title: "Classification: Moving Beyond Majority Vote"
+author: "Peter Freeman"
+date: "Summer 2019"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+Below we load in some variable star data. Much of the detail is unimportant, and so is consigned to an "unechoed" code chunk. (You can see the contents of this chunk if you view the contents of the `R Markdown` file.)
+
+The data represent two classes: contact binary stars (or `CB`s) and non-contact binary stars (or `NON-CB`s). In pre-processing, we retain 5000 examples of each. The research question is: can we learn a model that discriminates between the two classes?
+```{r echo=FALSE}
+load(url("https://raw.githubusercontent.com/pefreeman/36-290/master/EXAMPLE_DATASETS/TD_CLASS/css_data.Rdata"))
+# Eliminate the max.slope column (the 11th column), which has infinities.
+predictors = predictors[,-11]
+# Cut the CB and NON-CB class sizes to 5000 samples each.
+set.seed(303)
+w = which(response==1)
+s = sample(length(w),5000)
+predictors.cb = predictors[w[s],]
+response.cb   = response[w[s]]
+w = which(response!=1)
+s = sample(length(w),5000)
+predictors.noncb = predictors[w[s],]
+response.noncb   = response[w[s]]
+predictors = rbind(predictors.cb,predictors.noncb)
+response   = c(response.cb,response.noncb)
+response.new = rep("CB",length(response))
+w = which(response!=1)
+response.new[w] = "NON-CB"
+```
+```{r}
+response = factor(response.new,levels=c("NON-CB","CB"))
+set.seed(101)
+s = sample(length(response),round(0.7*length(response)))
+pred.train = predictors[s,]
+pred.test  = predictors[-s,]
+resp.train = response[s]
+resp.test  = response[-s]
+```
+Note the first line above. When one defines a factor variable, by default the levels are defined via alphabetical order. But here, we envision that `NON-CB` is a "negative" response (and thus naturally to be associated with value 0) and `CB` is a "positive" response, so we assign the levels to be in this order. (You don't have to do this, so long as you are careful when interpreting your confusion matrix.)
+
+Random Forest Analysis
+===
+
+```{r}
+suppressMessages(library(randomForest))
+rf.out = randomForest(resp.train~.,data=pred.train)
+resp.pred = predict(rf.out,newdata=pred.test,type="response")
+(rf.mcr = mean(resp.pred!=resp.test))
+table(resp.pred,resp.test)
+```
+
+The Class-Indentification Threshold
+===
+
+Let's look at the estimated probabilities for each class, by redoing the prediction above with argument `prob` instead of `response`:
+```{r}
+predict(rf.out,newdata=pred.test,type="prob")[1:2,]
+```
+Here, the first row represents object 1: random forest estimates that there is a 92% chance that it is a contact binary, and an 8% chance that it is not. Because the default threshold proportion is 50%, the object will be predicted to be a contact binary.
+
+Altering the Class-Identification Threshold
+===
+
+We can change the threshold by utilizing the `cutoff` argument. `cutoff` can be a bit tricky to work with: if you have $K$ classes, you have to specify $K$ cutoff values that sum to 1, but really only the first $K-1$ matter. So here, if we want the threshold for contact binary identification to be 0.8, we'd add the argument `cutoff=c(0.2,0.8)`:
+```{r}
+resp.pred = predict(rf.out,newdata=pred.test,type="response",cutoff=c(0.2,0.8))
+(rf.mcr = mean(resp.pred!=resp.test))
+table(resp.pred,resp.test)
+```
+We find that changing the threshold to 0.8 may not actually be a good thing to do: the MCR went up. Besides that, we see that our ability to identify contact binaries is diminished.
+
+However: our ability to identify the alternative class is enhanced. If your goal is to produce a "pure" catalog of variables that are not contact binaries, then increasing the threshold from, e.g., 0.5 to 0.8 is actually a good thing to do. (In fact, maybe you want to set the threshold even higher!) (Another way of stating this: if constructing a pure catalog representative of one of the classes is your goal, then the MCR is not going to be the correct loss function to use.)
+
+Receiver Operating Characteristics (ROC) Curve
+===
+
+One can examine how the threshold matters by repeatedly calling `predict` with different cutoff arguments. But a more efficient approach is to generate a so-called ROC curve. Let's simply run one and look at the output:
+```{r}
+if ( require(pROC) == FALSE ) {
+  install.packages("pROC",repos="https://cloud.r-project.org")
+  library(pROC)
+}
+resp.pred = predict(rf.out,newdata=pred.test,type="prob")[,1]
+roc.rf = roc(resp.test,resp.pred)
+```
+
+Receiver Operating Characteristics (ROC) Curve
+===
+
+```{r}
+names(roc.rf)
+```
+The first part of the output to highlight is "thresholds": this is a vector of different cutoff values...for our example, 498 of them!
+```{r}
+roc.rf$thresholds[1:10] 
+```
+
+We also notice "sensitivities" and "specificities." These make most sense if I lay out the following matrix first:
+
+|               |                |
+| ------------- | -------------- |
+| True Negative (TN) | False Negative (FN) |
+| False Positive (FP) | True Positive (TP) |
+
+(Note: some sources, like wikipedia, switch the rows and columns; as long as you know what is where, it ultimately doesn't make a difference which convention you choose.) A "true positive," or TP, is classifying a `CB` as a `CB`, while a "false positive," or FP, is classifying a `NON-CB` as a `CB`, etc.
+
+- sensitivity or recall or true positive rate or completeness: TP/(TP+FN), evaluated on right column 
+- specificity or true negative rate: TN/(TN+FP), evaluated on left column
+- purity or positive predictive value: TP/(TP+FP), evaluated on bottom row
+
+ROC Curve
+===
+
+A ROC curve is a curve that shows sensitivity (how well we identify the positive class) versus specificity (how well we identify the negative class); the curve is constructed by taking specificity-sensitivity pairs for each threshold value and "connecting the dots":
+```{r fig.height=4.5,fig.width=4.5,fig.align="center"}
+plot(roc.rf,col="red",xlim=c(1,0),ylim=c(0,1))         # Another non-ggplot production
+```
+The diagonal line represents the baseline of "random guessing." The better the overall performance of a classifier, the more the curve moves towards the upper left.
+
+Area Under Curve (AUC)
+===
+
+One means to compare classifiers that goes beyond misclassification rates based on majority vote is to compute the area under the ROC curve. For random guessing, the area is 0.5. For perfect classification at all thresholds, the AUC is 1.
+```{r}
+cat("AUC for random forest: ",roc.rf$auc,"\n")
+```
+
+The advantage of AUC over simple MCR via majority vote is that it attempts to take into account all possible threshold values at once, i.e., it allows us to identify which classifier performs the best over a range of conditions.
+
+Determining an Optimal Threshold Value
+===
+
+By introducing ROC curves and the concept of AUC, we now have a new metric for model selection. But ultimately, we do need to choose *one* threshold value so as to generate predictions. We can use the ROC curve to do this, while acknowledging that there is no unique means to choose that one value.
+
+An often-used choice is *Youden's J* statistic:
+$$
+{\rm J}~=~{\rm sensitivity}~+~{\rm specificity}~-~1
+$$
+Basically, we want to determine the threshold value that allows us to best identify `NON-CB`s and `CB`s at the same time. For our example:
+```{r}
+J = roc.rf$sensitivities + roc.rf$specificities - 1
+w = which.max(J)
+cat("Optimum threshold for random forest: ",roc.rf$thresholds[w],"\n")
+```
+The value is close to 0.5, which is not surprising because our data had balanced classes. When the data feature unbalanced classes, optimal thresholds may differ greatly from 0.5.
+

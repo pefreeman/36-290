@@ -1,0 +1,27 @@
+---
+title: "Data Science"
+author: "Peter Freeman"
+date: "Summer 2019"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+What is Data Science?
+===
+
+When I hear this question, I hark back to Bubble from the 1990s British TV series *Absolutely Fabulous*, who, when pressed for an answer once said:
+
+*Who can say?*
+
+Well, we can try to say...
+
+The Search for the Unicorn
+===
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/data_science.png){width=500px}</center>
+
+(Credit: Computer Science Department, Luther College)
+
+
+

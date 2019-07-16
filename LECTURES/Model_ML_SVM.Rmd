@@ -1,0 +1,62 @@
+---
+title: "Support Vector Machines"
+author: "Peter Freeman"
+date: "Summer 2019"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+The Short Version
+===
+
+A *support vector machine* is an enigmatically named machine learning algorithm for classification (although some use a regression variant of SVM as well).
+
+SVM transforms predictor data into a *higher dimensional space* and in that space constructs a linear boundary (i.e., a hyperplane) that optimally separates instances of two classes. (Note that SVM is not designed to tackle analyses in which the response has $K > 2$ classes!)
+
+Let's build up SVM qualitatively, one layer at a time...
+
+Maximum Margin Classifier
+===
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Figure_9.3.png){width=40%}</center>
+
+(Figure 9.3, *Introduction to Statistical Learning* by James et al.)
+
+The *maximum margin classifier* determines the linear boundary (or "separating hyperplane") in the native space of the predictor data that has the largest *minimum* distance to a training datum. The MMC is very sensitive to the choice of training data, and in the end is not useful in real-life classification settings, as it requires a complete separation between instances of the two classes.
+
+(But while we are here: look at the three short line segments that are perpendicular to the boundary. These are *support vectors*: they "hold up," or support, the linear boundary.)
+
+Support Vector Classifier
+===
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Figure_9.7.png){width=60%}</center>
+
+(Figure 9.7, *Introduction to Statistical Learning* by James et al.)
+
+The *support vector classifier* improves upon the MMC by allowing instances of the two classes to overlap. (Good!) It still determines a linear boundary in the native space of the predictor data, and adds to MMC a tuning parameter (conventionally $C$ or "cost") that controls for the rate of boundary violations. As $C \rightarrow \infty$, the SVC becomes more tolerant to violations.
+
+The figure above shows modeled linear boundaries given four different values of $C$, from more tolerant of violations at upper left (high $C$) to less tolerant at lower right (low $C$). Determining the appropriate value of $C$ requires splitting training data into training and validation datasets, or applying cross-validation with the training set data.
+
+Support Vector Machine
+===
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Figure_9.9.png){width=60%}</center>
+
+(Figure 9.9, *Introduction to Statistical Learning* by James et al.)
+
+And finally, the *support vector machine*. SVM is an extension to SVC that, like SVC, utilizes a linear boundary that can be violated, but that defines that boundary in a higher-dimensional space.
+
+Example: SVM with a polynomial kernel of degree 2 transforms a space where $p=2$ to one where $p=5$:
+$$
+\{X_1,X_2\} \rightarrow \{X_1,X_2,X_1^2,X_2^2,X_1X_2\}
+$$
+
+What is a kernel, you ask. The mathematical details are complex are will not be recreated here, particularly as they don't particularly help one build intuition about what SVM does. Ultimately, SVM
+
+- determines an optimal linear boundary in a space of dimensionality $> p$;
+- uses inner (or dot) products to solve for that linear boundary; and
+- exploits the fact that evaluating kernel functions in the native $p$-dimensional space of the data is equivalent (and far less computationally intensive!) to explicitly transforming the data vectors to a higher-dimensional space and computing inner products there. (This is the so-called "kernel trick.")
+
+Different kernels encapsulate different mappings to higher dimensional spaces and thus lead to the creation of *different boundaries*. (Hence SVM with different kernel choices will yield different test set MCR values!) Common kernel choices are `linear`, `polynomial`, and `radial`. Note that each has tuning parameters.
+

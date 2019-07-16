@@ -1,0 +1,50 @@
+---
+title: "Boosting"
+author: "Peter Freeman"
+date: "Summer 2019"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+Context
+===
+
+"Can a set of weak learners create a single strong learner?"
+
+$-$ Kearns & Valiant
+
+An example of a "weak learner" is, e.g., a decision tree with a single split (i.e., a "decision stump"). The "set of weak learners" is, e.g., the repeated generation of stumps given some iterative rule, such as "let's upweight the currently misclassified observations next time around." (This is the core of the AdaBoost algorithm.) After iteration, a strong learner is created.
+
+Boosting is a so-called "meta-algorithm": it is an algorithm that dictates how to repeatedly apply another algorithm. As such, boosting can be applied with many models, like linear regression. However, boosting is most associated with trees.
+
+There are also many different kinds of boosting (i.e., many different ways to define the meta-algorithm: upweight observations the next time, etc.). The most oft-used boosting algorithm now, however, is *gradient boosting*, which we describe on the next slide.
+
+Gradient Boosting
+===
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Algorithm_8.2.png){width=40%}</center>
+
+(Algorithm 8.2, *Introduction to Statistical Learning* by James et al.)
+
+The core idea of regression tree boosting: it *slowly* learns a model by fitting the *residuals* of the previous fit. In other words, it fits a stumpy tree to the original data, shrinks that tree (note the $\lambda$ parameter), updates the residuals, sets the data to be those residuals, and repeats. Hence each iteration of boosting attempts to hone in on those data that were not well fit previously.
+
+The smaller the value of $\lambda$, the more slowly and conservatively the final tree is grown.
+
+The contrast with bagging is that bagging involves growing many separate deep trees that are aggregated, while boosting grows one tree sequentially by adding a weighted series of stumps.
+
+Gradient Boosting
+===
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/boosting_1.png){width=40%} ![](http://www.stat.cmu.edu/~pfreeman/boosting_2.png){width=40%}</center>
+
+<font size="2">
+(From `https://medium.com/mlreview/gradient-boosting-from-scratch-1e317ae4587d`)
+</font>
+
+Gradient Boosting: Variable Importance
+===
+
+Like random forest, boosting allows one to measure variable importance. This importance measure is called the "gain," defined as the "fractional contribution of each feature to the model based on the total gain of
+this feature’s splits. Higher percentage means a more important predictive feature." (Definition from `xgboost` documentation.)
+

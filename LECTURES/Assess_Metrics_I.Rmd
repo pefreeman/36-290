@@ -1,0 +1,140 @@
+---
+title: "Model Assessment and Selection"
+author: "Peter Freeman"
+date: "Summer 2019"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+What's the Difference?
+===
+
+*Model Assessment*:
+
+- evaluating how well a learned model performs, via the use of a single-number metric
+
+*Model Selection*:
+
+- selecting the best model from a suite of learned models (e.g., linear regression, random forest, etc.)
+
+Model "Flexibility"
+===
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Flexibility.png){width=70%}</center>
+
+(Figure 2.9, *Introduction to Statistical Learning* by James et al.)
+
+The left panel above provides an intuitive notion of the meaning of model flexibility.
+
+The data are generated from a smoothly varying non-linear model (shown in black), with random noise added:
+$$
+Y = f(X) + \epsilon
+$$
+
+The orange line shows a simple linear regression fit to the data: linear regression involves the use of an inflexible, fully parametrized model, and thus it can neither provide a good estimate of $f(X)$ nor can it "overfit" by modeling the noisy deviations of the data from $f(X)$.  
+
+Model "Flexibility"
+===
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Flexibility.png){width=70%}</center>
+
+(Figure 2.9, *Introduction to Statistical Learning* by James et al.)
+
+The green line, by contrast, shows a model that is overly flexible: it can provide a good estimate of $f(X)$ but it goes too far and overfits by modeling the noisy deviations from $f(X)$. Such a model is not "generalizable": it will tend to do a bad job of predicting the response given a new predictor $X_o$ that was not used in learning the model.
+
+How to Deal with Flexibility
+===
+
+So...we want to learn a statistical model that provides a good estimate of $f(X)$ without overfitting.
+
+There are two common approaches:
+
+- We can split the data into two groups: one used to train models, and another used to test them. By assessing models using "held-out" test set data, we act to ensure that we get a generalizable(!) estimate of $f(X)$.
+
+- We can repeat data splitting $k$ times, with each datum being placed in the "held-out" group exactly once. This is *k-fold cross validation*. The general heuristic is that $k$ should be 5 or 10.
+
+$k$-fold cross validation is the preferred approach, but the tradeoff is that CV analyses take ${\sim}k$ times longer than analyses that utilize data splitting.
+
+Model Assessment
+===
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Flexibility.png){width=70%}</center>
+
+(Figure 2.9, *Introduction to Statistical Learning* by James et al.)
+
+The right panel shows a metric of model assessment, the mean squared error, as a function of flexibility for both a training dataset and a test dataset.
+
+The training error decreases as the model becomes more flexible; eventually the training error reaches zero as the model becomes so flexible as to pass exactly through every data point.
+
+The test error, on the other hand, decreases while model flexibility increases until (approximately) the point that a good estimate of $f(X)$ is reached; afterwards it increases, since models that overfit the training data do not generalize well to the test data.
+
+Reproducibility
+===
+
+An important aspect of a statistical analysis is that it be reproducible. You should...
+
+1. Record your analysis in a notebook, via, e.g., `R Markdown` or `Jupyter`. A notebook should be complete such that if you give it and datasets to someone, that someone should be able to recreate the entire analysis and achieve the exact same results. To ensure the achivement of the exact same results, you should...
+
+2. Manually set the random-number generator seed before each instance of random sampling in your analysis (such as when you assign data to training or test sets, or to folds):
+```{r}
+set.seed(101)    # can be any number...
+sample(10,3)     # sample three numbers between 1 and 10 inclusive
+set.seed(101)
+sample(10,3)     # voila: the same three numbers!
+```
+
+Model Assessment Metrics: Loss and Risk
+===
+
+A *loss function*, also known as a *cost function*, is a metric that represents the quality of fit of a model. 
+
+A common loss function in regression is a quadratic loss function based on the squared difference between model predictions and observed data. The *mean squared error*, or *MSE*, is the estimator associated with the quadratic loss function, and is the most commonly used metric for assessing regression models.
+
+For classification, the situation is not quite so clear-cut. Common metrics include the *misclassification rate*  or *MCR* (what percentage of predictions are wrong) and the *area under curve*. And note that interpretation can be affected by *class imbalance*: if two classes are equally represented in a dataset, an MCR of 2% is quite good; but if one class comprises 99% of the data, that 2% is no longer such a good result.
+
+Model Selection
+===
+
+As mentioned on the first slide, model selection is picking the best model from a suite of possible models. This can be as simple as picking the regression model with the best *MSE* or the classification model with the best *MCR*. However, two things must be kept in mind:
+
+1. To ensure an apples-to-apples comparison of metrics, every model should be learned using *the same training and test set data*! Do not resample the data between the time when you, e.g., perform linear regression and when you perform random forest.
+
+2. An assessment metric is a *random variable*, i.e., if you choose different data to be in your training set, the metric will be different.
+
+For regression, a third point should be kept in mind:
+
+3. A metric like the MSE is *unit-dependent*: an MSE of 0.001 in one analysis context is not necessarily better or worse than an MSE of 100 in another context.
+
+Model Diagnostic: Regression
+===
+
+Since the MSE is unit-dependent, you cannot use its value alone to determine the quality of the underlying model.
+
+A useful diagnostic is to plot predicted responses (for the test set data!) versus the observed responses:
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Fig_Diagnostic_I.png){width=40%}</center>
+
+Key points:
+
+- If the data are completely uninformative, the data will lie on a horizontal locus: every input with generate the same prediction, the average observed value.
+- If the model is "perfect," the data will lie along the diagonal line.
+- Real-life models will generate plots with behaviors between this two extremes, with additional intrinsic scatter.
+
+Model Diagnostic: Regression
+===
+
+A variation on the diagnostic presented on the previous slide is to plot model residuals (observed response minus predicted response) versus the predicted responses:
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Fig_Diagnostic_II.png){width=40%} ![](http://www.stat.cmu.edu/~pfreeman/Fig_Diagnostic_III.png){width=40%}</center>
+
+If the model reflects well any underlying association, then conditional on the value of the predicted redshift, the residuals should have zero mean. Furthermore, for models such as linear regression that have a built-in assumption of normality with constant variance, the standardized residuals should be normally distributed with variance 1. (Normality of the residuals may be checked using, e.g., the `qqnorm()` function.) 
+
+Model Diagnostics: Classification
+===
+
+The most straightforward diagnostic is the *confusion matrix*, whose rows are predicted classes and whose columns are observed classes:
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Classification_Diagnostic.png){width=30%}</center>
+
+There are *many* metrics associated with confusion matrices in addition to the MCR (the ratio of the sum of the off-diagonal values to the overall table sum, which here is 0.223), such as the *sensitivity* and *specificity*, etc. For definitions, see, e.g., [this web page](https://en.wikipedia.org/wiki/Confusion_matrix).

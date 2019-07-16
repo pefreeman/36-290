@@ -13,3 +13,5 @@ Questions? pfreeman AT cmu DOT edu
 16 Jul 2019: Moved the project datasets to the EXAMPLES directory. Four new
 project datasets will be placed here in the near future.
 
+16 Jul 2019: Added KEPLER_OBJS_INTEREST dataset.
+

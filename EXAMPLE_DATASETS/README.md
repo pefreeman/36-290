@@ -16,3 +16,6 @@ Questions? pfreeman AT cmu DOT edu
 5 Jul 2018: MDR and STAR_QUASAR added. STAR_LRG_SEPARATION moved to PROJECT_DATASETS.
 
 6 Aug 2018: the seven datasets above, plus the four in the PROJECT_DATASETS directory, will be the ones I go with in Fall 2018.
+
+16 Jul 2019: moved the 2018 project datasets into this directory
+

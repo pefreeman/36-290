@@ -5,5 +5,5 @@ Previously analyzed data are placed into EXAMPLE_DATASETS; these will be used fo
 
 Data to be analyzed by students for their final projects are placed into PROJECT_DATASETS.
 
-Class materials (notes and labs) are to be found in MATERIALS.
+Lecture slides are to be found in LECTURES.
 

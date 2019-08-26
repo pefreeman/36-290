@@ -1,11 +1,18 @@
 ---
 title: "Statistical Learning: Introduction"
-author: "Peter Freeman"
-date: "Summer 2019"
+author: "36-290 -- Introduction to Statistical Research Methodology"
+date: "Week 1 -- Fall 2019"
 output: 
   slidy_presentation:
     font_adjustment: -1
 ---
+
+Data Science: The Search for the Unicorn
+===
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/data_science.png){width=500px}</center>
+
+(Credit: Computer Science Department, Luther College)
 
 What is Statistical Learning?
 ===

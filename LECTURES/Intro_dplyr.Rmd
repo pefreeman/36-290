@@ -1,7 +1,7 @@
 ---
 title: "Introduction to dplyr"
-author: "Peter Freeman"
-date: "Summer 2019"
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 2 Tuesday -- Fall 2019"
 output: 
   slidy_presentation:
     font_adjustment: -1
@@ -66,7 +66,7 @@ Use `slice()` when you want to indicate certain row numbers need to be kept:
 ```{r}
 df %>% slice(.,c(7,8,14:15))
 ```
-The `%>%` is a *pipe*. A pipe takes the output of one `R` command and uses it as input to a following command. Here, we pipe the output of `df` (which is simply the whole data frame) to the `slice()` function. The period in the `slice()` function indicates where the data frame would go if we were to simply call `slice()` without any piped input. (In other words, we could replace the construction above with `slice(df,c(7,8,14:15))`.) The `slice()` function then outputs the 7th, 8th, 14th, and 15th rows. (Note the `c()` function: that is one way to define a vector of numbers. Think of "c" as standing for "collection" or "container". The `:` defines an inclusive integer range.)
+The `%>%` is a *pipe*. A pipe takes the output of one `R` command and uses it as input to a following command. Here, we pipe the output of `df` (which is simply the whole data frame) to the `slice()` function. The period in the `slice()` function indicates where the data frame would go if we were to simply call `slice()` without any piped input. (In other words, we could replace the construction above with `slice(df,c(7,8,14:15))`.) The `slice()` function then outputs the 7th, 8th, 14th, and 15th rows.
 
 slice()
 ===

@@ -22,7 +22,7 @@ The dataset in this directory contains 24 measurements for each of 250,000 stars
 | `parallax` + `parallax_error` | stellar parallax + uncertainty |
 | `pmra` + `pmra_error` | proper motion along longitude line + uncertainty |
 | `pmdec` + `pmdec_error` | proper motion along latitude line + uncertainty |
-| `phot_[g,bp,rp]_mean_flux` + phot_[g,bp,rp]_mean_flux_error` | flux in green, blue, and red bands + uncertainties |
+| `phot_[g,bp,rp]_mean_flux` + `phot_[g,bp,rp]_mean_flux_error` | flux in green, blue, and red bands + uncertainties |
 | `phot_[g,bp,rp]_mean_mag` | magnitudes in green, blue, and red bands + uncertainties |
 | `bp_rp` | stellar color: blue band - red band magnitude |
 | `L` + `B` | galactic longitude + latitude |

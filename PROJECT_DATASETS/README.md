@@ -15,3 +15,5 @@ project datasets will be placed here in the near future.
 
 16 Jul 2019: Added KEPLER_OBJS_INTEREST dataset.
 
+10 Sep 2019: Added STELLAR_TEMPERATURE dataset.
+

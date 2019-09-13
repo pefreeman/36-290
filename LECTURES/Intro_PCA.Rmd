@@ -1,0 +1,83 @@
+---
+title: Principal Components Analysis
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 4 Tuesday -- Fall 2019"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+The Setting
+===
+
+The setting for *principal components analysis* or *PCA* is similar to the setting for unsupervised learning: you have a collection of $p$ measurements for each of $n$ objects $X_1,\ldots,X_n$, where for a given object $i$
+$$
+X_{i1},X_{i2},\ldots,X_{ip} \sim P
+$$
+where $P$ is some $p$-dimensional distribution that we might not know much about *a priori*. Note that when we apply PCA, the measurements $X$ may be all the data, or may represent the predictors if there is a response variable.
+
+PCA
+===
+
+Let's build up intuition for PCA by starting off with a picture:
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/pca.png){width=60%}</center>
+
+Here, $p$ = 2. What does the PCA algorithm do? Effectively, it moves the coordinate system origin to the centroid of the point cloud, then rotates the axes such that "PC Axis 1" lies along the direction of greatest variation (the solid line above), and "PC Axis 2" lies orthogonal to to "PC Axis 1." If $p > 2$, then "PC Axis 2" would lie along the direction of greatest residual variation, and "PC Axis 3" would then be defined orthogonal to axes 1 and 2, etc.
+
+PCA as Dimension Reduction Tool
+===
+
+Imagine that we have a $p$-dimensional point cloud that we wish to visualize. One way to do this is to utilize PCA "to find a low-dimensional representation of the data that captures as much of the [statistical] information [present] as possible." 
+
+For instance, if it would so happen that the data in our $p$-dimensional space actually all lie on a two-dimensional plane embedded within that space, PCA would uncover this structure and we would subsequently be able to visualize the data using two-dimensional scatter plots.
+
+In this example, the key word is "[hyper]plane." The main limitation of PCA is that it is a *linear* algorithm: it projects data to hyperplanes. If the data inhabit a curved surface within the $p$-dimensional space, PCA would not be the optimal algorithm by which to explore the data. In this case, we'd use *nonlinear* techniques like diffusion map or local linear embedding. These are beyond the scope of the class.
+
+(Another method for visualizing data in two dimensions that is all the rage right now is *tSNE*, or t-Distribution Stochastic Neighbor Embedding. We may return to look at tSNE before the end of the semester, if we've extra time.)
+
+PCA: Algorithm
+===
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/pc1_proj.png){width=40%} ![](http://www.stat.cmu.edu/~pfreeman/pc1.png){width=40%}</center>
+
+The "score" or coordinate of the $i^{\rm th}$ observation along PC $j$ is
+$$
+Z_{ij} = \sum_{k=1}^p X_{ik} \phi_{kj}
+$$
+where $k$ represents the $k^{\rm th}$ variable or feature (i.e., the $k^{\rm th}$ column of your [predictor] data frame). The algorithm determines the rotation (or loading) matrix $\phi$, which is normalized such that $\sum_{k=1}^p \phi_{kj}^2 = 1$. Note that $j$ ranges from 1 to $p$.
+
+Note that since we are "mixing axes" when doing PCA, it is generally best to standardize (or scale) the data frame before applying the algorithm.
+
+PCA: Algorithm (Deeper Detail)
+===
+
+PCA proceeds by factoring the (scaled) data frame via *singular value decomposition*, or *SVD*:
+$$
+X = U D V^T
+$$
+where $X$ is the scaled data frame, $U$ and $V$ are eigenvector matrices, and $D$ is the diagonal matrix of eigenvalues. ($V^T$ means "the transpose of $V$.") The PC coordinates are then $Z = XV$, meaning that $\phi$ from the last slide is the matrix of eigenvalues $V$.
+
+Note that PCA will really only work if $n$, the number of rows in your data frame, is greater than $p$, the number of variables. 
+
+PCA: How to Choose the Number of Dimensions to Retain
+===
+
+Well, that's the million-dollar question now, isn't it? And guess what: there is no simple answer to this! ("Embrace the Ambiguity" indeed.)
+
+The ideal would be the following: choose $M < p$ such that
+$$
+x_{ij} = \sum_{m=1}^p z_{im}\phi_{jm} \approx \sum_{m=1}^M z_{im}\phi_{jm} \,.
+$$
+In other words, we don't lose much ability to reconstruct the input data $X$ by dropping the last $p-M$ principal components, which we assume represent random variation in the data (i.e., noise).
+
+One convention: sum up the amount of variance explained in the first $M$ PCs, and adopt the smallest value of $M$ such that 90% or 95% or 99%, etc., of the overall variance is "explained."
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/propvar.png){width=60%}</center>
+
+Another convention: look for an "elbow" in the PC scree plot (the left panel above). An elbow is where the percentage of variance explained transitions from falling off rapidly to falling off slowly. Above, it is not necessarily clear if an elbow exists and if it does, where it exactly is.
+
+A Final Parting Note from ISLR
+===
+
+"In practice, we tend to look at the first few principal components in order to find interesting patterns in the data. If no interesting patterns are found in the first few principal components, then further principal components are unlikely to be of interest."

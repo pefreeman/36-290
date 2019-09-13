@@ -12,7 +12,7 @@ output:
 The Setting
 ===
 
-The setting for *unsupervised learning* it that you have a collection of $p$ measurements for each of $n$ objects $X_1,\ldots,X_n$, where for a given object $i$
+The setting for *unsupervised learning* is that you have a collection of $p$ measurements for each of $n$ objects $X_1,\ldots,X_n$, where for a given object $i$
 $$
 X_{i1},X_{i2},\ldots,X_{ip} \sim P
 $$

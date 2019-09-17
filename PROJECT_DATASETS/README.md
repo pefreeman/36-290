@@ -17,3 +17,5 @@ project datasets will be placed here in the near future.
 
 10 Sep 2019: Added STELLAR_TEMPERATURE dataset.
 
+17 Sep 2019: Added GALAXY_PROPERTIES datasets.
+

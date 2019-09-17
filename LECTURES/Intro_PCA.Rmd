@@ -30,7 +30,7 @@ PCA as Dimension Reduction Tool
 
 Imagine that we have a $p$-dimensional point cloud that we wish to visualize. One way to do this is to utilize PCA "to find a low-dimensional representation of the data that captures as much of the [statistical] information [present] as possible." 
 
-For instance, if it would so happen that the data in our $p$-dimensional space actually all lie on a two-dimensional plane embedded within that space, PCA would uncover this structure and we would subsequently be able to visualize the data using two-dimensional scatter plots.
+For instance, if it would so happen that the data in our $p$-dimensional space actually all lie on a two-dimensional plane embedded within that space, PCA would uncover this structure and we would subsequently be able to visualize the data using two-dimensional scatter plots. (Another possibility is to perform, e.g., linear regression using a subset of principal components rather than the original data frame. "Principal components regression" is covered in ISLR but not explicitly covered in this class.)
 
 In this example, the key word is "[hyper]plane." The main limitation of PCA is that it is a *linear* algorithm: it projects data to hyperplanes. If the data inhabit a curved surface within the $p$-dimensional space, PCA would not be the optimal algorithm by which to explore the data. In this case, we'd use *nonlinear* techniques like diffusion map or local linear embedding. These are beyond the scope of the class.
 
@@ -60,7 +60,7 @@ where $X$ is the scaled data frame, $U$ and $V$ are eigenvector matrices, and $D
 
 Note that PCA will really only work if $n$, the number of rows in your data frame, is greater than $p$, the number of variables. 
 
-PCA: How to Choose the Number of Dimensions to Retain
+PCA: Choosing the Number of Dimensions to Retain
 ===
 
 Well, that's the million-dollar question now, isn't it? And guess what: there is no simple answer to this! ("Embrace the Ambiguity" indeed.)

@@ -7,7 +7,7 @@ So here we have to make a slight digression: what is redshift? The short story i
 
 Photometric data is essentially extremely low-resolution spectroscopic data. Instead of data spread over thousands of narrow wavelength bins, we have data in five wide wavelength bins. The bins are denoted u, g, r, i, and z, with the first four mapping roughly to "ultraviolet," "green," "red," and "infrared." In contrast with spectroscopic data, photometric data is relatively "cheap and easy" to collect. Thus for every galaxy that has been observed spectroscopically, there are roughly 100 that have only been observed photometrically.
 
-So, back to the project goal. The datasets in this directory contain predictor data frames that contain 15 measurements for each of 219,812 galaxies:
+So, back to the project goal. The datasets in this directory contain predictor data frames that have 15 measurements for each of 219,812 galaxies:
 
 | variable name | description |
 | ------------- | ----------- |
@@ -16,7 +16,7 @@ So, back to the project goal. The datasets in this directory contain predictor d
 | `z`, `z.err` | spectroscopic redshift (and its uncertainty) |
 | `mag.[ugriz]`, `mag.[ugriz].err` | photometric magnitudes (and their uncertainties) |
 
-The datasets also contain response data frames that contain 4 separate possible response variables:
+The datasets also contain response data frames that have 4 separate possible response variables:
 
 | variable name | description |
 | ------------- | ----------- |
@@ -35,7 +35,7 @@ So now we can return to the issue of why there are two datasets. One, labeled `p
 
 ---
 
-Note that this project can go many directions. For 36-290, it is sufficient to work through to the initial goal outlined in the first bullet point below.
+Note that this project can go in many directions. For 36-290, it is sufficient to work through to the initial goal outlined in the first bullet point below.
 
 - As stated above, the initial goal would be to regress `mass` upon the magnitudes, (`ra`,`dec`), and `e.bv`. Why not redshift? Because one would in theory like to be able to apply the model to estimate masses for galaxies for which we only have photometry (and thus for which we do not have a precise redshift estimate). However, comparing and contrasting predictive ability for the no-redshift model versus a model that include redshift would be interesting.
 - Once an analysis framework is in place, one could extend the project to predict `sfr`, `age`, and/or `absmag.K`.

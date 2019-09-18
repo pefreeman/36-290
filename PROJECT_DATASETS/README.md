@@ -19,3 +19,5 @@ project datasets will be placed here in the near future.
 
 17 Sep 2019: Added GALAXY_PROPERTIES datasets.
 
+18 Sep 2019: Added QUASAR_REDSHIFT dataset.
+

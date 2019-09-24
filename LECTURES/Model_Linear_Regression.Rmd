@@ -1,7 +1,7 @@
 ---
 title: "Linear Regression"
-author: "Peter Freeman"
-date: "Summer 2019"
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 5 Tuesday -- Fall 2019"
 output: 
   slidy_presentation:
     font_adjustment: -1
@@ -69,7 +69,7 @@ $\Rightarrow$ While the $p$ values might be informative, use variable selection 
 Linear Regression: Output
 ===
 
-In addition to the $p$ values, you will note in the example output a value dubbed "Adjusted R-squared" (which has value 0.983). The adjusted $R^2$ has a value between 0 and 1 and is an estimate of the proportion of the variance of the data along the $y$-axis explained by the linear regression model. Adjusted $R^2$ provides intuition as to how good a linear model fits to the data, as opposed to the mean-squared error.
+In addition to the $p$ values, you will note in the example output a value dubbed "Adjusted R-squared" (which has value 0.983). The adjusted $R^2$ has a value between 0 and 1 and is an estimate of the proportion of the variance of the data along the $y$-axis explained by the linear regression model. Adjusted $R^2$ provides intuition as to how well a linear model fits to the data, as opposed to the mean-squared error.
 ```{r fig.height=6,fig.width=6,fig.align="center"}
 library(ggplot2)
 df = data.frame(x,y,predict(out.lm))
@@ -84,7 +84,7 @@ Linear Regression: Other Points to Keep In Mind
 
 A proper discussion of each of the points given below could span one or more lectures in a conventional regression class! Here we just mention them, as caveats.
 
-1. You may find it useful to transform your variables. (For instance, a distribution of values that is highly skew may be much less so if you transform them logarithmically.) Keep this in mind as you perform EDA.
+1. You may find it useful to transform your variables so that they are distributed more normally. This is less critical for predictors (though it may be helpful) and more critical for the response variable (otherwise the assumptions of linear regression may be violated). Keep this in mind as you perform EDA and think about the statistical learning that you will perform in your analyses. See the file `Variable_Transformations.pdf` in the `LECTURES` directory on GitHub for guidance.
 
 2. Outliers may adversely affect your regression estimates. In a linear regression setting, outliers may be identified via the "Cook's distance." We offer no general heuristic regarding how to deal with outliers, other than you should scrupulously document how you deal with them!
 
@@ -96,4 +96,29 @@ Last Point: Do I Really Need to Split My Data?
 If your entire analysis workflow involves fitting one linear regression model to your data, there is no need to split your data into training and test datasets. Just learn the model, and interpret it.
 
 However, if you intend to learn multiple models (e.g., linear regression, a regression tree, random forest), then you should estimate the $\beta$'s using only the training data and you should generate predictions and compute the MSE using the test data.
+
+Model Diagnostic
+===
+
+Since the MSE is unit-dependent, you cannot use its value alone to determine the quality of the underlying model.
+
+A useful diagnostic (for *any* regression analysis, not just a linear regression analysis!) is to plot predicted responses (for the test set data!) versus the observed responses:
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Fig_Diagnostic_I.png){width=40%}</center>
+
+Key points:
+
+- If the data are completely uninformative, the data will lie on a horizontal locus: every input with generate the same prediction, the average observed value.
+- If the model is "perfect," the data will lie along the diagonal line.
+- Real-life models will generate plots with behaviors between this two extremes, with additional intrinsic scatter.
+
+Model Diagnostic
+===
+
+A variation on the diagnostic presented on the previous slide is to plot model residuals (observed response minus predicted response) versus the predicted responses:
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Fig_Diagnostic_II.png){width=40%} ![](http://www.stat.cmu.edu/~pfreeman/Fig_Diagnostic_III.png){width=40%}</center>
+
+If the model reflects well any underlying association, then conditional on the value of the predicted redshift, the residuals should have zero mean. Furthermore, for models such as linear regression that have a built-in assumption of normality with constant variance, the standardized residuals should be normally distributed with variance 1. (Normality of the residuals may be checked using, e.g., the `qqnorm()` function.) 
+
 

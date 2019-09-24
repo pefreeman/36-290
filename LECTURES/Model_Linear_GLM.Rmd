@@ -1,7 +1,7 @@
 ---
 title: "Generalized Linear Models"
-author: "Peter Freeman"
-date: "Summer 2019"
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 5 Tuesday -- Fall 2019"
 output: 
   slidy_presentation:
     font_adjustment: -1
@@ -44,10 +44,10 @@ The reason we bring up distributions is because linear regression and its genera
 For instance, for simple linear regression, we assume that for every value of $x$...
 
 - the distribution governing the possible values of $Y$ is a *normal* distribution (note: we capitalize $Y$ because the values are *random variables*, random samples from the distribution);
-- the mean of the normal distribution is $g(y \vert x) = \beta_0 + \beta_1 x$;
-- the variance of the normal distribution is $\sigma^2$, which is a constant (i.e., does not vary with $x$)
+- the mean of the normal distribution is $\mu(y \vert x) = \beta_0 + \beta_1 x$;
+- the variance of the normal distribution is $\sigma^2$, which is a constant (i.e., does not vary with $x$).
 
-Our goal is to estimate the mean: $E[Y \vert x] = \beta_0 + \beta_1 x$. The set of means, for all $x$, is the "regression line."
+Our goal is to estimate the mean: $E[Y \vert x] = \mu(y \vert x) = \beta_0 + \beta_1 x$. The set of means, for all $x$, is the "regression line."
 
 However, just because these assumptions are made in simple linear regression doesn't mean that all linear regression-related models utilize the same assumptions. They don't. When we step back from these assumptions, we enter the realm of the *generalized linear model*.
 
@@ -61,7 +61,7 @@ In generalized regression, the idea is to
 
 Estimation is done by maximizing the so-called *likelihood function*:
 $$
-{\cal L} = \prod_{i=1}^n f(Y_i \vert \theta) ~~{\rm or}~~ {\cal L} = \prod_{i=1}^n p(Y_i \vert \theta)
+{\cal L} = \prod_{i=1}^n f(Y_i \vert \theta) %~~{\rm or}~~ {\cal L} = \prod_{i=1}^n p(Y_i \vert \theta)
 $$
 where $n$ is the number of observed data. (You can also maximize $L = \log{\cal L}$, the so-called "log-likelihood.")
 
@@ -90,7 +90,7 @@ Generalization: Poisson Regression
 
 A distribution that fulfills the conditions imposed on the last slide is the *Poisson* distribution, which has a single parameter $\lambda$, which helpfully is the mean of the distribution (as well as the parameter which governs the distribution's shape).
 
-So, when we apply generalized linear regression in this context, we would identify the family as Poisson. (Why I point this out will make more sense Thursday when I show glm examples.)
+So, when we apply generalized linear regression in this context, we would identify the family as Poisson.
 
 But there's another step in generalization...
 
@@ -101,11 +101,11 @@ Let's keep things in the realm of one predictor. The linear function is
 $$
 \beta_0 + \beta_1 x \,.
 $$
-As noted above, the range of this function is $(-\infty,\infty)$. But in our Poisson regression example, we know that $Y$ cannot be negative, so we need to tranform the linear function somehow so that the domain of the transformed function is, in this case, $[0,\infty)$. (Or we could punt and use simple linear regression, but our results may not be meaningful, particularly if we estimate ${\hat Y}$ as being negative!)
+As noted above, the range of this function is $(-\infty,\infty)$. But in our Poisson regression example, we know that $Y$ cannot be negative, *so we need to tranform the linear function somehow* so that the domain of the transformed function is, in this case, $[0,\infty)$. (Or we could punt and use simple linear regression, but our results may not be meaningful, particularly if we estimate ${\hat Y}$ as being negative!)
 
 There is usually no unique transformation, but rather ones that are conventionally used. For this case:
 $$
-g(\lambda \vert x) = \log(\lambda \vert x) = \beta_0 + \beta_1 x
+g(\lambda \vert x) = \log(\lambda \vert x) = \beta_0 + \beta_1 x \,.
 $$
 $g$ is the *link* function. To tie this all together, given response data whose values are limited to being either 0 or positive integers, with no upper bound, we
 
@@ -125,7 +125,7 @@ What family might be appropriate for...
 3. $Y \vert x$ discrete, but can only take on the values 0 and 1?
 4. $Y \vert x$ discrete, but can only take on the values 0, 1, 2, ..., $n$?
 
-Case 3 is special, and we'll look at it more on Thursday.
+Case 3 is special, as you will see.
 
 
 

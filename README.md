@@ -3,26 +3,26 @@ This course is designed to introduce statistical research methodology--the proce
 
 Fall 2019, Tu-Th 1:30 - 2:50 PM, Wean 4625
 
-### Preliminary Schedule
+### Schedule
 
 | Week | Day | Topic |
 | ---- | --- | ----- |
-| 1    | Tu  | introduction to R + pre-test assessment |
+| 1    | Tu  | pre-test assessment + R + statistical learning |
 |      | Th  | R: vectors + lab |
-| 2    | Tu  | R: dplyr + ggplot + lab |
-|      | Th  | exploratory data analysis + lab |
-| 3    | Tu  | statistical learning + K-means + hierarchical clustering + lab |
-|      | Th  | PCA + lab |
-| 4    | Tu  | regression model assessment + lab |
-|      | Th  | classification model assessment + lab |
-| 5    | Tu  | linear regression + lab |
-|      | Th  | GLM + logistic regression + lab |
+| 2    | Tu  | R: dplyr + lab |
+|      | Th  | R: ggplot + lab
+| 3    | Tu  | exploratory data analysis + lab |
+|      | Th  | K-means + hierarchical clustering + lab |
+| 4    | Tu  | PCA + lab |
+|      | Th  | model assessment + bias-variance tradeoff + lab |
+| 5    | Tu  | GLM + linear regression + lab |
+|      | Th  | logistic regression + lab |
 | 6    | Tu  | best subset selection + lab |
 |      | Th  | penalized regression + lab |
 | 7    | Tu  | ML + trees + lab |
-|      | Th  | reserved for project dataset work |
-| 8    | Tu  | random forest + lab |
-|      | Th  | cancelled: mid-semester break |
+|      | Th  | random forest + lab |
+| 8    | Tu  | reserved for project dataset work |
+|      | Th  | cancelled: mid-semester break (first DA draft due) |
 | 9    | Tu  | boosting + lab |
 |      | Th  | naive bayes + lab |
 | 10   | Tu  | SVM + lab |
@@ -30,10 +30,10 @@ Fall 2019, Tu-Th 1:30 - 2:50 PM, Wean 4625
 | 11   | Tu  | TBD |
 |      | Th  | TBD |
 | 12   | Tu  | TBD |
-|      | Th  | reserved for project dataset work |
+|      | Th  | reserved for project dataset work (second DA draft due) |
 | 13   | Tu  | hackathon preliminaries |
 |      | Th  | hackathon presentations |
-| 14   | Tu  | cancelled: Thanksgiving |
+| 14   | Tu  | cancelled: Thanksgiving (final DA draft due) |
 |      | Th  | cancelled: Thanksgiving |
 | 15   | Tu  | oral presentations |
 |      | Th  | post-test assessment + retrospection |

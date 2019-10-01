@@ -1,7 +1,7 @@
 ---
 title: "Exploratory Data Analysis"
-author: "Peter Freeman"
-date: "Summer 2019"
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 3 Tuesday -- Fall 2019"
 output: 
   slidy_presentation:
     font_adjustment: -1
@@ -28,7 +28,9 @@ The basic questions on the previous slide motivate the statement of an important
 
 If the number of predictors variables is larger than 3, one cannot visualize the native space; one can only visualize *projections* of that space. If those projections yield useful information, great! But if they do not: one should not give up, *because information may have been lost in projection*.
 
-In other words: EDA itself is *not* a replacement for statistical learning. It is a means by which to build intuition prior to "turning the learning crank."
+In other words: **EDA itself is not a replacement for statistical learning**. 
+
+It is a means by which to build intuition prior to "turning the learning crank."
 
 The Limits of Exploratory Data Analysis
 ===

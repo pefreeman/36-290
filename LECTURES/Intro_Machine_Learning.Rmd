@@ -1,7 +1,7 @@
 ---
 title: "Machine Learning: Context"
-author: "Peter Freeman"
-date: "Summer 2019"
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 7 Tuesday -- Fall 2019"
 output: 
   slidy_presentation:
     font_adjustment: -1
@@ -33,7 +33,7 @@ That's not actually the right question to ask.
 
 The right question is ask is: why should I try different algorithms?
 
-The answer to that is that without superhuman powers, you cannot visualize the distribution of predictor variables in their native space. (Of course, you can visualize these data *in projection*...this a point we will return to when we discuss exploratory data analysis.) And the performance of different algorithms will be predicated on how predictor data are distributed...
+The answer to that is that without superhuman powers, you cannot visualize the distribution of predictor variables in their native space. (Of course, you can visualize these data *in projection*, for instance when we perform exploratory data analysis.) And the performance of different algorithms will be predicated on how predictor data are distributed...
 
 Data Geometry
 ===

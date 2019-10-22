@@ -1,7 +1,7 @@
 ---
 title: "Boosting"
-author: "Peter Freeman"
-date: "Summer 2019"
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 9 Tuesday -- Fall 2019"
 output: 
   slidy_presentation:
     font_adjustment: -1

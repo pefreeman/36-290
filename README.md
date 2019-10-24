@@ -24,9 +24,9 @@ Fall 2019, Tu-Th 1:30 - 2:50 PM, Wean 4625
 | 8    | Tu  | reserved for project dataset work |
 |      | Th  | cancelled: mid-semester break (first DA draft due) |
 | 9    | Tu  | boosting + lab |
-|      | Th  | naive bayes + lab |
-| 10   | Tu  | SVM + lab |
 |      | Th  | KNN + lab |
+| 10   | Tu  | SVM + lab |
+|      | Th  | naive Bayes + lab |
 | 11   | Tu  | TBD |
 |      | Th  | TBD |
 | 12   | Tu  | TBD |

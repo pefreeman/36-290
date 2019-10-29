@@ -1,7 +1,7 @@
 ---
 title: "Support Vector Machines"
-author: "Peter Freeman"
-date: "Summer 2019"
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 10 Tuesday -- Fall 2019"
 output: 
   slidy_presentation:
     font_adjustment: -1
@@ -12,7 +12,7 @@ The Short Version
 
 A *support vector machine* is an enigmatically named machine learning algorithm for classification (although some use a regression variant of SVM as well).
 
-SVM transforms predictor data into a *higher dimensional space* and in that space constructs a linear boundary (i.e., a hyperplane) that optimally separates instances of two classes. (Note that SVM is not designed to tackle analyses in which the response has $K > 2$ classes!)
+SVM transforms predictor data into a *higher-dimensional space* and in that space constructs a linear boundary (i.e., a hyperplane) that optimally separates instances of two classes. (Note that SVM is not designed to tackle analyses in which the response has $K > 2$ classes!)
 
 Let's build up SVM qualitatively, one layer at a time...
 
@@ -58,5 +58,5 @@ What is a kernel, you ask. The mathematical details are complex are will not be 
 - uses inner (or dot) products to solve for that linear boundary; and
 - exploits the fact that evaluating kernel functions in the native $p$-dimensional space of the data is equivalent (and far less computationally intensive!) to explicitly transforming the data vectors to a higher-dimensional space and computing inner products there. (This is the so-called "kernel trick.")
 
-Different kernels encapsulate different mappings to higher dimensional spaces and thus lead to the creation of *different boundaries*. (Hence SVM with different kernel choices will yield different test set MCR values!) Common kernel choices are `linear`, `polynomial`, and `radial`. Note that each has tuning parameters.
+Different kernels encapsulate different mappings to higher-dimensional spaces and thus lead to the creation of *different boundaries*. (Hence SVM with different kernel choices will yield different test set MCR values!) Common kernel choices are `linear` (which is actually equivalent to SVC...hence no kernel trick here), `polynomial`, and `radial`. Note that each has tuning parameters. For instance, for the `polynomial` kernel, the tuning parameters are the cost $C$ and the polynomial degree $d$.
 

@@ -28,7 +28,7 @@ Fall 2019, Tu-Th 1:30 - 2:50 PM, Wean 4625
 | 10   | Tu  | SVM + lab |
 |      | Th  | naive Bayes + lab |
 | 11   | Tu  | discussion of first DA draft + initial revision |
-|      | Th  | kernels: basic density estimation and regression |
+|      | Th  | kernels: density estimation and regression + lab |
 | 12   | Tu  | TBD |
 |      | Th  | reserved for project dataset work |
 |      | Su  | second AD draft due |

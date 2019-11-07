@@ -30,7 +30,8 @@ Fall 2019, Tu-Th 1:30 - 2:50 PM, Wean 4625
 | 11   | Tu  | discussion of first DA draft + initial revision |
 |      | Th  | kernels: basic density estimation and regression |
 | 12   | Tu  | TBD |
-|      | Th  | reserved for project dataset work (second DA draft due) |
+|      | Th  | reserved for project dataset work |
+|      | Su  | second AD draft due |
 | 13   | Tu  | poster discussion + hackathon preliminaries |
 |      | Th  | hackathon presentations |
 | 14   | Tu  | cancelled: Thanksgiving |

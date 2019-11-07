@@ -7,7 +7,7 @@ Fall 2019, Tu-Th 1:30 - 2:50 PM, Wean 4625
 
 | Week | Day | Topic |
 | ---- | --- | ----- |
-| 1    | Tu  | pre-test assessment + R + statistical learning |
+| 1    | Tu  | pre-course assessment + R + statistical learning |
 |      | Th  | R: vectors + lab |
 | 2    | Tu  | R: dplyr + lab |
 |      | Th  | R: ggplot + lab
@@ -27,15 +27,16 @@ Fall 2019, Tu-Th 1:30 - 2:50 PM, Wean 4625
 |      | Th  | KNN + lab |
 | 10   | Tu  | SVM + lab |
 |      | Th  | naive Bayes + lab |
-| 11   | Tu  | TBD |
-|      | Th  | TBD |
+| 11   | Tu  | discussion of first DA draft + initial revision |
+|      | Th  | kernels: basic density estimation and regression |
 | 12   | Tu  | TBD |
 |      | Th  | reserved for project dataset work (second DA draft due) |
-| 13   | Tu  | hackathon preliminaries |
+| 13   | Tu  | poster discussion + hackathon preliminaries |
 |      | Th  | hackathon presentations |
-| 14   | Tu  | cancelled: Thanksgiving (final DA draft due) |
+| 14   | Tu  | cancelled: Thanksgiving |
 |      | Th  | cancelled: Thanksgiving |
-| 15   | Tu  | oral presentations |
-|      | Th  | post-test assessment + retrospection |
-| F    | Fr  | final poster due |
+| 15   | Tu  | reserved for group poster work |
+|      | Th  | post-course assessment + retrospective survey + poster work |
+|      | Fr  | final DA + final poster due |
+| F    | We  | departmental poster presentation |
 

@@ -3,6 +3,9 @@ This course is designed to introduce statistical research methodology--the proce
 
 Fall 2019, Tu-Th 1:30 - 2:50 PM, Wean 4625
 
+Note: lab materials are available upon request; as I wish to reuse (at least
+some elements of) them, they will not be posted here.
+
 ### Schedule
 
 | Week | Day | Topic |

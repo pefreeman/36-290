@@ -19,3 +19,5 @@ Questions? pfreeman AT cmu DOT edu
 
 16 Jul 2019: moved the 2018 project datasets into this directory
 
+14 Jul 2020: moved the 2019 project datasets into this directory
+

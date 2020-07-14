@@ -21,3 +21,5 @@ project datasets will be placed here in the near future.
 
 18 Sep 2019: Added QUASAR_REDSHIFT dataset.
 
+14 Jul 2020: Moved the 2019 project datasets to EXAMPLE_DATASETS. New project
+datasets will be added over time.

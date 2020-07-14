@@ -1,12 +1,12 @@
 
 This course is designed to introduce statistical research methodology--the procedures by which statisticians go about approaching and analyzing data--to early undergraduates. Students will learn basic concepts of statistical learning--inference vs. prediction, supervised vs. unsupervised learning, regression vs. classification, etc.--and will reinforce this knowledge by applying, e.g., linear regression, random forest, principal components analysis, and/or hierarchical clustering and more to datasets provided by the instructor. Students will also practice disseminating the results of their analyses via oral presentations and posters. Analyses will primarily be carried out using the `R` programming language, but with attention paid to how one would perform similar analyses using Python. Previous knowledge of `R` is not required for this course. Space is very limited; there will be an application process. The course is currently open to sophomore statistics students only.
 
-Fall 2019, Tu-Th 1:30 - 2:50 PM, Wean 4625
+Fall 2020, Tu-Th 1:30 - 2:50 PM (subject to change), modality TBD
 
 Note: lab materials are available upon request; as I wish to reuse (at least
 some elements of) them, they will not be posted here.
 
-### Schedule
+### 2019 Schedule (to be updated for Fall 2020)
 
 | Week | Day | Topic |
 | ---- | --- | ----- |
@@ -32,7 +32,7 @@ some elements of) them, they will not be posted here.
 |      | Th  | naive Bayes + lab |
 | 11   | Tu  | discussion of first DA draft + initial revision |
 |      | Th  | kernels: density estimation and regression + lab |
-| 12   | Tu  | TBD |
+| 12   | Tu  | reserved for project dataset work |
 |      | Th  | reserved for project dataset work |
 |      | Su  | second AD draft due |
 | 13   | Tu  | poster discussion + hackathon preliminaries |

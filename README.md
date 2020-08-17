@@ -46,6 +46,5 @@ in the LECTURES directory for more information.
 |      | Fr  | final DA + final poster due |
 | F    | We  | TBD: departmental poster presentation |
 |      |     |   |
-| May  | We  | TBD: CMU Meeting of the Minds |
-| 5    |     |   |
+| May 5| We  | TBD: CMU Meeting of the Minds |
 | 2021 |     |   |

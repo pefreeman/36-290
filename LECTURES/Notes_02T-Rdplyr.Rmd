@@ -1,0 +1,137 @@
+---
+title: "Introduction to dplyr"
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 2 Tuesday -- Fall 2020"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+A First Dataset
+===
+
+Below we will read in data that are stored on disk in an ASCII (i.e., human-readable) file in csv (or "comma-separated values") format. csv is a common format, so even though we do not cover file I/O here, you may be able to utilize this example to start exploring your own data.
+```{r}
+df = read.csv("http://www.stat.cmu.edu/~pfreeman/GalaxyMass.csv")
+```
+The variable `df` stands for "data frame." (To be clear, you can use whatever name you want for the variable that points to the data frame.) A data frame is a table of data. Here, those data consist of 3456 rows and 10 columns:
+```{r}
+dim(df)
+```
+
+A First Dataset
+===
+
+In a data frame, each row corresponds to a single object under study. Here, those objects are galaxies. Each column, by contrast, represents a different measurement associated with the object under study. Here, there are ten. To see their names, use `names()`:
+```{r}
+names(df)
+```
+The first column represents a sector of the sky in which the galaxy lies. This is a *factor* variable, because it takes on a few discrete values that don't necessarily map to any particular numerical order:
+```{r}
+unique(df$field)
+```
+(Note the use of the dollar sign!) The next seven variables represent different statistics that summarize the galaxy's appearance. The penultimate variable is an estimate of galaxy distance, and the last is an estimate of galaxy mass.
+
+dplyr
+===
+
+`dplyr` is a package within the larger `tidyverse` that one uses to manipulate data frames. In this set of notes, we will demonstrate basic data frame manipulation using `dplyr` functions and "pipes" (from the `magrittr` package).
+```{r}
+library(magrittr)
+library(dplyr)
+```
+We *could* just load the whole `tidyverse` instead, if we wish.
+
+dplyr 
+===
+
+Think of data frames as nouns and `dplyr` functions as verbs, actions that you apply to the data frames. The following are the most basic `dplyr` verbs:
+
+- `slice()`: choose particular rows based on integer indexing 
+- `filter()`: choose particular rows based on logical criteria
+- `group_by()`: split the data frame into groups of rows based on factor variable values
+- `select()`: choose particular columns
+- `arrange()`: order rows by value of a column
+- `mutate()`: create new columns
+
+**NOTE**: calling `dplyr` verbs always outputs a new data frame; it *does not alter* the existing data frame.
+
+So to keep the changes, we have to reassign the data frame to be the output of the pipe, as we will see below.
+
+slice()
+===
+
+Use `slice()` when you want to indicate certain row numbers need to be kept:
+
+```{r}
+df %>% slice(.,c(7,8,14:15))
+```
+The `%>%` is a *pipe*. A pipe takes the output of one `R` command and uses it as input to a following command. Here, we pipe the output of `df` (which is simply the whole data frame) to the `slice()` function. The period in the `slice()` function indicates where the data frame would go if we were to simply call `slice()` without any piped input. (In other words, we could replace the construction above with `slice(df,c(7,8,14:15))`.) The `slice()` function then outputs the 7th, 8th, 14th, and 15th rows.
+
+slice()
+===
+
+Slicing can also be done "negatively":
+```{r}
+df %>% slice(.,-c(1:2,19:23)) %>% nrow(.)
+```
+Here, we *keep* all the rows *except* the 1st, 2nd, and 19th through 23rd rows, then check to see how many rows we have left.
+
+filter()
+===
+
+Use `filter()` when you want to choose rows based on logical conditions:
+
+```{r}
+df %>% filter(.,field=="COSMOS") %>% head(.,2)
+df %>% filter(.,mass>10) %>% nrow(.)
+df %>% filter(.,(field=="GOODSS" & mass<10)) %>% nrow(.)
+```
+Note the use of `&` in the third example. This combines conditions via the logical `and`. `|` is the analogous symbol for `or`.
+
+group_by()
+===
+
+Use `group_by()` to split your data frame into groups of rows based on the values of a factor variable. Note that `group_by()` in and of itself is only useful if you pipe its output to something else...like `summarize()`:
+```{r}
+df %>% group_by(.,field) %>% summarize(.,Mean=mean(mass),Number=n())
+```
+Here, `Mean` is a column name used in the output data frame; what is shown in that column is the average value of the galaxy mass in each field. Similarly, `Number` shows the number of galaxies in the sample from each field.
+
+select()
+===
+
+Use `select()` when you want to choose certain columns:
+
+```{r}
+df %>% select(.,Gini,q,z.mode) %>% slice(.,c(1:4))
+```
+Note: here we chose columns *and* rows.
+
+arrange()
+===
+
+Use `arrange()` to order rows by values of a column:
+```{r}
+df %>% arrange(.,desc(mass)) %>% select(.,C,A,z.mode) %>% head(.,2)
+```
+If you just do `arrange(.,mass)` then the masses will be ordered in *ascending* order, by default.
+
+mutate()
+===
+
+Use `mutate()` when you want to create one or several columns:
+```{r}
+df %>% mutate(.,mass.linear=10^mass) %>% select(.,mass,mass.linear) %>% arrange(.,mass) %>% head(.,3)
+```
+
+Saving the New Data Frame
+===
+
+As stated above, the original data frame is not altered in piping operations. To save the result of a series of piping operations, just use `=` or `->`:
+```{r}
+df.new = df %>% filter(.,field=="EGS") %>% select(.,z.mode,mass) 
+nrow(df.new)
+df %>% filter(.,field=="COSMOS") %>% select(.,Gini,M20,C,A) -> df.new
+nrow(df.new)
+```

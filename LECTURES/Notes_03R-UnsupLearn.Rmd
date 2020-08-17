@@ -1,0 +1,125 @@
+---
+title: |
+  | Introduction to Unsupervised Learning: 
+  |  K-Means and Hierarchical Clustering
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 3 Thursday -- Fall 2020"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+The Setting
+===
+
+The setting for *unsupervised learning* is that you have a collection of $p$ measurements for each of $n$ objects $X_1,\ldots,X_n$, where for a given object $i$
+$$
+X_{i1},X_{i2},\ldots,X_{ip} \sim P
+$$
+where $P$ is some $p$-dimensional distribution that we might not know much about *a priori*.
+
+The term "unsupervised" simply means that none of the variables are response variables, i.e., there are no labeled data.
+
+One can think of unsupervised learning as being an extension of EDA, where the goal is to discover interesting things about the data. The main, overriding issue with unsupervised learning is that *there are no universally accepted mechanisms for model assessment or selection, i.e., there is no unique right answer!*
+
+Clustering
+===
+
+What is clustering?
+
+- It is the partitioning of data into homogeneous subgroups.
+
+What is the goal of clustering?
+
+- To define clusters for which the within-cluster variation is relatively small.
+
+...but what defines small?
+
+- Generally, we want small Euclidean distances between the points within a cluster, where the Euclidean distance between datum $i$ and datum $j$ is
+$$
+d_{ij} = \sqrt{(X_{i1}-X_{j1})^2 + \cdots + (X_{ip}-X_{jp})^2}
+$$
+Note that *units matter*! One axis might dominate the others when computing Euclidean distance because the range of values along that axis is much larger than the ranges along other axes. So it is a good idea to standardize each column of the input data frame with have mean zero and standard deviation one. See `scale()`.
+
+K-Means Clustering
+===
+
+The algorithm for K-means clustering is straightforward:
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/alg_10-1.png){width=60%}</center>
+
+Note the following:
+
+- As stated above, there is no universally accepted metric that leads one to conclude that a particular value of $K$ is the optimal one.
+- Your results will change from run to run unless you explicitly set the random number seed immediately before calling `kmeans()`.
+- Step 1 of the algorithm indicates that the algorithm randomly associates data to clusters. To mitigate this aspect of randomness, set the `nstart` argument in the function call to a large number (e.g., 50), and select the best result, with best result meaning the one with the smallest value of within-cluster variation.
+
+K-Means Clustering: Example
+===
+
+Let's generate some fake data:
+```{r fig.height=6,fig.width=6,fig.align="center"}
+set.seed(101)
+x = c(rnorm(30),rnorm(30,mean=2.25))
+y = c(rnorm(30),rnorm(30,mean=2.25))
+s = c(rep(2,30),rep(19,30))
+library(ggplot2)
+ggplot(data=data.frame(x,y),mapping=aes(x=x,y=y)) + geom_point(color="firebrick",shape=s)
+```
+
+K-Means Clustering: Example
+===
+
+What happens if we assume two clusters?
+```{r fig.height=6,fig.width=6,fig.align="center"}
+km.out = kmeans(data.frame(x,y),2,nstart=20)
+color = km.out$cluster
+ggplot(data=data.frame(x,y),mapping=aes(x=x,y=y)) + geom_point(color=color,shape=s)
+```
+
+K-Means Clustering: Example
+===
+
+What happens if we assume three clusters?
+```{r fig.height=6,fig.width=6,fig.align="center"}
+km.out = kmeans(data.frame(x,y),3,nstart=20)
+color = km.out$cluster
+ggplot(data=data.frame(x,y),mapping=aes(x=x,y=y)) + geom_point(color=color,shape=s)
+```
+
+Hierarchical Clustering
+===
+
+The algorithm for hierarchical clustering is also straightforward:
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/alg_10-2.png){width=60%}</center>
+
+Note the "[t]reat each observation as its own cluster." This is specifically "bottom-up" or *agglomerative* clustering. A primary limitation of agglomerative clustering is that all clusters lie within other clusters (hence the name "hierarchical").
+
+Hierarchical Clustering: Example
+===
+
+Here's an example of a dendrogram for complete-linkage hierarchical clustering. The "height" along the vertical axis at which two clusters fuse indicates dissimilarity...the higher the merge, the greater the dissimilarity between clusters. One extracts cluster members using, e.g., the `cutree()` function and processing its output.
+```{r fig.height=6,fig.width=6,fig.align="center"}
+hc.out = hclust(dist(data.frame(x,y)),method="complete")
+plot(hc.out)
+```
+
+Hierarchical Clustering: Linkage
+===
+
+In agglomerative clustering, clusters are built up piece by piece by linking them together. There is no unique algorithm for how that linking is done! Note the descriptions below, and note that average and complete linkage are the algorithms most commonly used.
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/linkage.png){width=60%}</center>
+
+K-Means and Hierarchical Clustering: Wrap-Up
+===
+
+So: which of these should you use? Quoting ISLR: "we recommend performing clustering with different choices of [methods and parameters], and looking at the full set of results in order to see what patterns consistently emerge."
+
+That said:
+
+- In K-means, you specify the number of clusters before running the algorithm, as opposed to hierarchical clustering, where you specify the number of clusters afterwards by cutting across a dendrogram. 
+- Note that dendrograms can be really hard to read when the sample size is large.
+- Also note that all data are assigned to clusters in these algorithms. Maybe that shouldn't be the case. Another algorithm we do not cover is the *Gaussian Mixture Model* (GMM), which can be used to specify probabilities that an observation belongs to a particular group/cluster. Then you can decide how to assign observations. (See, e.g., the `GMM` function in the `ClusterR` package.)
+

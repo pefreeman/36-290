@@ -1,0 +1,70 @@
+---
+title: "K Nearest Neighbors"
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 9 Thursday -- Fall 2020"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+KNN
+===
+
+In words: KNN examines the $k$ data points closest to a location $x$ and uses just those data to generate predictions. The optimal value of $k$ is that which minimizes validation-set MSE (regression) or, e.g., MCR (classification).
+
+KNN straddles the boundary between fully parameterized models like linear regression and fully data-driven models like random forest. A KNN model is data-driven, but one *can* actually write down a compact parametric form for the model *a priori*:
+
+- For regression:
+$$
+{\hat Y} \vert x = \frac{1}{k} \sum_{i=1}^k Y_i \,,
+$$
+- For classification:
+$$
+P[Y = j \vert x] = \frac{1}{k} \sum_{i=1}^k I(Y_i = j) \,,
+$$
+where $I(\cdot)$ is the indicator function: it returns 0 if the argument is false, and 1 otherwise. The summation yields the proportion of neighbors that are of class $j$.
+
+Finding the Optimal Number of Neighbors
+===
+
+For KNN, the number of neighbors $k$ is a *tuning parameter* (like $\lambda$ is for lasso). This means that in addition to splitting data into training and test datasets, the training data themselves have to be split into a smaller training set and a validation set. For each value of $k$, you train on the smaller training set, and compute MSE or MCR using the validation set. Once the optimum value of $k$ is determined, you re-run the model using the *full* (unsplit) training set, and assess the model using the test data. (Again: the test data are never used when learning/tuning the model!) (Note: the `FNN` package in `R` does cross-validation on the training set for you, under the hood...you do not need to code this yourself!)
+
+As is the case elsewhere in statistical learning, determining the optimal value of $k$ requires balancing bias and variance:
+
+- If $k$ is too small, the resulting model is *too flexible*, which means is has low bias (it is right on average...if we apply KNN to an infinite number of datasets sampled from the same parent population) but high variance (the predictions have a large spread in values when we apply KNN to our infinite data). See the panels to the left on the next slide.
+
+- If $k$ is too large, the resulting model is *not flexible enough*, resulting in high bias (wrong on average) and low variance (nearly same predictions, every time). See the panels to the right on the next slide.
+
+Finding the Optimal Number of Neighbors
+===
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Fig_3.16.png){width=60%}</center>
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Fig_2.16.png){width=60%}</center>
+
+(Figures 3.16 [top] and 2.16 [bottom], *Introduction to Statistical Learning* by James et al.)
+
+KNN in Context
+===
+
+Here are two quotes from ISLR to keep in mind when thinking about KNN:
+
+- "As a general rule, parametric methods [like linear regression] will tend to outperform non-parametric approaches [like KNN] when there is a small number of observations per predictor." This is the *curse of dimensionality*: for data-driven models, the amount of data you need to get similar model performance goes up exponentially with $p$.
+
+$\Rightarrow$ KNN might not be a good model to learn when the number of predictor variables is very large.
+
+- "Even in problems in which the dimension is small, we might prefer linear regression to KNN from an interpretability standpoint. If the test MSE of KNN is only slightly lower than that of linear regression, we might be willing to forego a little bit of prediction accuracy for the sake of a simple model..."
+
+$\Rightarrow$ KNN is not the best model to learn if inference is the goal of an analysis.
+
+KNN: Two Critical Points to Remember
+===
+
+1. To determine which neighbors are the nearest neighbors, pairwise Euclidean distances are computed...so we need to scale (or standardize) the individual predictor variables so that the distances are not skewed by that one predictor that has the largest variance.
+
+2. Don't blindly compute a pairwise distance matrix! For instance, if $n$ = 100,000, then your pairwise distance matrix will have 10$^{10}$ elements, each of which uses 8 bytes in memory...resulting in a memory usage of 80 GB! Your laptop cannot handle this. It can barely handle 1-2 GB at this point. If $n$ is large, you have three options:
+    a. subsample your data, limiting $n$ to be $\lesssim$ 15,000-20,000;
+    b. use a variant of KNN that works with sparse matrices (matrices that can be compressed since most values are zero); or
+    c. make use of a "kd tree" to more effectively (but only approximately) identify nearest neighbors.
+  
+The `FNN` package in `R` has an option to search for neighbors via the use of a kd tree.

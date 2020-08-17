@@ -1,0 +1,115 @@
+---
+title: "The Bias-Variance Tradeoff"
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 4 Thursday -- Fall 2020"
+output:
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+The Model
+===
+
+```{r fig.height=6,fig.width=6,fig.align="center"}
+library(ggplot2)
+x.true  = seq(-2,4,0.01)
+df.true = data.frame("x"=x.true,"y"=x.true^2)
+ggplot(data=df.true,mapping=aes(x=x,y=y)) + geom_line(linetype="dashed",color="red",size=1.5) + ylim(-2,18)
+```
+
+The Repeated Observations
+===
+
+```{r fig.height=6,fig.width=6,fig.align="center"}
+df = data.frame()
+for ( ii in 1:4 ) {
+  set.seed(101+ii)
+  x = runif(100,min=-2,max=4)
+  y = x^2 + rnorm(100,sd=1.5)
+  df.tmp = data.frame("exp"=rep(ii,100),x,y)
+  df = rbind(df,df.tmp)
+}
+df$exp = factor(df$exp)
+ggplot(data=df,mapping=aes(x=x,y=y)) + geom_point(size=0.5) + 
+  geom_line(data=df.true,mapping=aes(x=x,y=y),linetype="dashed",color="red",size=1.5) + xlim(-2,4) + ylim(-2,18) + 
+  facet_wrap(~exp,scales='free_x')
+```
+
+The Linear Regression Fits
+===
+
+```{r fig.height=6,fig.width=6,fig.align="center"}
+df.lm = data.frame()
+for ( ii in 1:4 ) {
+  w = which(df$exp==ii)
+  x = df$x[w]
+  y = df$y[w]
+  out.lm = lm(y~x)
+  y.lm = coef(out.lm)[1] + coef(out.lm)[2]*df.true$x
+  df.tmp = data.frame("exp"=rep(ii,nrow(df.true)),"x"=df.true$x,"y"=y.lm)
+  df.lm = rbind(df.lm,df.tmp)
+}
+```
+
+The Linear Regression Fits
+===
+
+```{r fig.height=6,fig.width=6,fig.align="center"}
+df.lm$exp = factor(df.lm$exp)
+ggplot(data=df,mapping=aes(x=x,y=y)) + geom_point(size=0.5) + 
+  geom_line(data=df.lm,mapping=aes(x=x,y=y),linetype="dashed",color="red",size=1.5) + xlim(-2,4) + ylim(-2,18) + 
+  facet_wrap(~exp,scales='free_x')
+```
+Look at the plots. For any given value of $x$:
+
+- The *average* estimated $y$ value is offset from the truth. This is "high bias."
+- The dispersion (variance) in the estimated $y$ values is relatively small. This is "low variance."
+
+The Spline Fits
+===
+
+```{r fig.height=6,fig.width=6,fig.align="center"}
+if ( require(splines) == FALSE ) {
+  install.packages("splines",repos="https://cloud.r-project.org")
+  library(splines)
+}
+df.spline = data.frame()
+for ( ii in 1:4 ) {
+  w = which(df$exp==ii)
+  x = df$x[w]
+  y = df$y[w]
+  out.spline = lm(y~bs(x,knots=seq(-1.5,3.5,by=0.2)))
+  y.spline = predict(out.spline)
+  o = order(x)
+  df.tmp = data.frame("exp"=rep(ii,length(x)),"x"=x[o],"y"=y.spline[o])
+  df.spline = rbind(df.spline,df.tmp)
+}
+```
+
+The Spline Fits
+===
+
+```{r fig.height=6,fig.width=6,fig.align="center"}
+df.spline$exp = factor(df.spline$exp)
+ggplot(data=df,mapping=aes(x=x,y=y)) + geom_point(size=0.5) + 
+  geom_line(data=df.spline,mapping=aes(x=x,y=y),linetype="dashed",color="red",size=1.5) + xlim(-2,4) + ylim(-2,18) + 
+  facet_wrap(~exp,scales='free_x')
+```
+Look at the plots. For any given value of $x$:
+
+- The *average* estimated $y$ value approximately matches the truth. This is "low bias."
+- The dispersion (variance) in the estimated $y$ values is relatively large This is "high variance."
+
+The Bias-Variance Tradeoff
+===
+
+- In model selection, the best model is the one for which the test-set mean-squared error (MSE) is minimized.
+
+- It can be shown that:
+$$
+{\rm MSE} = {\rm (Bias)}^2 + {\rm Variance}
+$$
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Flexibility.png){width=60%}</center>
+
+Look at the figure to the right, and the uppermost curve (which is the test-set MSE). Towards the left, the model is insufficiently flexible: high bias, low variance. Towards the right, the model is overly flexible: low bias, high variance. The optimal amount of flexibility lies somewhere in the middle.

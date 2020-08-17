@@ -1,0 +1,53 @@
+---
+title: "Penalized Regression"
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 6 Thursday -- Fall 2020"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+Shrinkage Methods
+===
+
+The lasso and ridge regression are *shrinkage methods* that are alternatives to best subset selection (and to forward or backward stepwise selection). They differ from BSS in that they penalize models in a different manner than BSS does:
+\begin{eqnarray*}
+{\rm lasso:} &~& {\rm RSS} + \lambda \sum_{i=1}^p \vert \beta_i \vert \\
+{\rm ridge:} &~& {\rm RSS} + \lambda \sum_{i=1}^p \beta_i^2
+\end{eqnarray*}
+The effects of the additive penalty (or regularization) terms is dictated by the magnitude of the tuning parameter $\lambda$. If $\lambda \rightarrow 0$, then the penalty terms have no effect, and thus the use of lasso and ridge regression is equivalent to simply performing regular old linear regression.
+
+However, if $\lambda \rightarrow \infty$, then...
+
+- lasso: to balance the large value of $\lambda$, all the linear regression coefficients shrink toward zero, but some go to zero more quickly than others; hence lasso performs its own version of subset selection
+
+- ridge: to balance the large value of $\lambda$, all the coefficients shrink toward zero
+
+Shrinkage Methods
+===
+
+<center> ![](http://www.stat.cmu.edu/~pfreeman/Lasso.png){width=39.5%}
+![](http://www.stat.cmu.edu/~pfreeman/Ridge.png){width=40%} </center>
+
+For example: note how the magnitude of the coefficient for `Income` trends as $\lambda \rightarrow \infty$.
+
+In the context of lasso, the coefficient goes to zero at $\lambda \sim 1000$; if the optimum value of $\lambda$ is larger, then `Income` would not be included in the learned model.
+
+In the context of ridge regression, the coefficient shrinks towards zero, but never actually reaches it. `Income` is always a variable in the learned model, regardless of the value of $\lambda$.
+
+While it may seem obvious that lasso is the preferred learning model (since it performs variable selection), realize that ridge regression may yield a small test-set MSE! Depending on circumstance, you may prefer to utilize a model that has $p$ predictor variables, but yields better predictions, over a model that has $k < p$ predictor variables, but yields worse predictions.
+
+Shrinkage Methods: Caveats
+===
+
+1. If you use either the lasso or ridge regression, you should *standardize* your data. While there is no unique way to standardize, the most common convention is to, within each column of data, compute and subtract off the sample mean, and compute and subtract off the sample standard deviation:
+$$
+\tilde{X}_i = \frac{X_i - \bar{X}_i}{s_{X,i}}
+$$
+
+(Note that if you utilize the `glmnet` package, standardization is performed by default.)
+
+2. $\lambda$ is a tuning parameter. This means that you have to split your training data into training and validation sets, or perform cross-validation on the training data.
+
+(Note that if you utilize the `glmnet` package, the `cv.glmnet()` package will perform the necessary cross-validation for you.)
+

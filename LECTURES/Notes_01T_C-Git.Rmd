@@ -1,0 +1,109 @@
+---
+title: "Version Control With Git"
+author: "36-290 -- Introduction to Statistical Research Methodology"
+date: "Week 1 -- Fall 2020"
+output: 
+  slidy_presentation: 
+    font_adjustment: -1
+---
+
+```{r,echo=FALSE}
+set.seed(101)
+```
+
+Why Version Control?
+===
+
+"The person who knows the most about your code is you-six-months-ago, and you-six-months-ago are not replying to your emailed questions." -Anon.
+
+The features of version control:
+
+- It allows you to keep a complete record of changes, allowing you to, e.g., revert back to a previous version of your code if things have gone awry.
+
+- As part of that complete record, it allows you to store messages for every change, so that you can recall the rationale for a change later.
+
+- With, e.g., `Git`, you can back your code up in the cloud (e.g., on `GitHub`), allowing for easy distribution.
+
+Note that here I am talking about "code," but version control can also be useful when you are, for instance, writing reports (like your DAs in 36-401).
+
+Git Basics
+===
+
+`Git` allows you to take "snapshots" of the contents of a folder on your machine as you make changes to them. (This is your local repository, or "repo".) Fix a bug? Take a snapshot. Add functionality? Take a snapshot. These snapshots are dubbed *commits*. Snapshot details are stored in the subfolder .git.
+
+Every time you commit your changes, you write a message that clearly indicates the changes that you have made since your last commit.
+
+In `Git`, two or more people can make independent changes to the same code, or one person can have two or more different code versions being developed in parallel, via *branching*. (Technically a branch is a pointer to a particular commit...think of it as you point to a particular version of a code and "branch out" from there. The default branch is the *master*.) Development spawned by branching can later be *merged*.
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/git.png)</center>
+
+<small>From: *Pro Git* by Chacon & Straub (`git-scm.com/book/en/v2`)</small>
+
+Install GitHub
+===
+
+1) If you do not have a `GitHub` account, get one at `github.com`!
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/github.png){width=800px}</center>
+
+Install Git
+===
+
+2) If you do not have `Git` installed on your laptop, install it!
+
+- Mac: `Git for Mac` (at `https://git-scm.com/downloads`) or via `homebrew` (`brew install git`)
+
+- Linux: `apt-get install git` or `yum install git`
+
+- Windows: `Git for Windows` (at `https://git-scm.com/downloads`)
+
+During setup, configure `Git` with your user name (**use your full name, not your Andrew ID**) and your user email (**which should be the same one you used to sign up for your `GitHub` account**).
+
+Linking RStudio to an Existing GitHub Repo
+===
+
+In `RStudio`, do the following:
+
+- click on `File > New Project...`
+
+- click on "Version Control", then on "Git"
+
+- provide the *full* address for the "Repository URL" (including the `https`, etc.; by default, this will provide the name of your local repository)
+
+- make sure "Create project as subdirectory of:" points to where you want to point it (I'd suggest that you have a `GIT` folder, with your project(s) being subdirectories of that folder)
+
+- click on "Create Project"
+
+At this point, you should find that your `Files` pane is listing the files in your local repository, including one ending in `.Rproj` and and `Rmd` file that contains your lab.
+
+Updating Your Repository
+===
+
+To, e.g., update the `Rmd` file on your local repository (and to add the `html` file), do the following:
+
+- edit the `Rmd` file so as to add your answers to lab questions
+
+- save the file...at this point, the file name should show up in the `Git` pane next to an "M" symbol (for modified)
+
+- knit the file...at this point, an `html` file should also appear in the `Git` pane next to an "M" symbol
+
+- continue to modify the files, or...stage the files for a commit (think of it as: pose it for its snapshot) by clicking on "Staged" in the Git pane
+
+- click on "Commit" in the `Git` pane
+
+- in the new window that opens, add a "Commit message", then click on the "Commit" button
+
+- click on "Push" to push your changes from your local repo to your `GitHub` repo
+
+Done.
+
+Sources of Information
+===
+
+- [Happy Git With R](http://happygitwithr.com) by Jenny Bryan and a squad of TAs
+
+- [An Introduction to Git and How to Use It with RStudio](http://r-bio.github.io/intro-git-rstudio/)
+
+- [Pro Git](https://git-scm.com/book/en/v2) by Scott Chacon &amp; Ben Straub
+
+

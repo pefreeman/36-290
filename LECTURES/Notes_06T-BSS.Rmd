@@ -1,0 +1,83 @@
+---
+title: "Subset Selection"
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 6 Tuesday -- Fall 2020"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+The Setting
+===
+
+We wish to learn a linear model. Our estimate is
+$$
+\hat{Y} = \hat{\beta}_0 + \hat{\beta}_1 X_1 + \cdots + \hat{\beta}_p X_p
+$$
+where the hats denote estimated quantities.
+
+In subset selection, we attempt to select a subset $s$ out of the $p$ overall
+predictors. Why?
+
+1. *To improve prediction accuracy*. Eliminating uninformative predictors can lead to lower variance in the test-set MSE, at the expense of a slight increase in bias.
+
+2. *To improve model interpretability*. Eliminating uninformative predictors is obviously a good thing when your goal is to tell the story of how your predictors are associated with your response.
+
+Note that subset selection is useful and/or necessary if, e.g., $n \lesssim p$ (the sample size is roughly the same as, or less than, the number of predictor variables), but can still be helpful if $n > p$. If $n \gg p$, subset selection generally does not yield useful results.
+
+Best Subset Selection
+===
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Algorithm_6.1.png){width=70%}</center>
+
+(Algorithm 6.1, *Introduction to Statistical Learning* by James et al.)
+
+Note:
+$$
+{p \choose k} = \frac{p!}{k!(p-k)!}
+$$
+BSS works for $p \lesssim 25$; otherwise the total number of models is such that lack of computer memory becomes an issue.
+
+BSS Tuning
+===
+
+The application of BSS involves tuning: what is the best set of variables to keep? When tuning is involved, we generally have to split the training data into a smaller training set plus a so-called *validation* set, or perform cross-validation on the training set. (For instance, if we originally used 70% of our data to train the model and 30% to assess it, after resplitting the training data we might have 49% [70% of 70%] of our data used for training, 21% [30% of 70%] for validation, and 30% for testing.)
+
+However, here we don't need to explicitly resplit the data: the first three metrics listed under Step 3 above are estimators of the validation set MSE. So we can apply BSS to our full training dataset!
+
+BSS Metrics
+===
+
+The functional forms of the metrics given in Step 3 are
+\begin{eqnarray*}
+C_p &=& \frac{1}{n} ( {\rm RSS} + 2k\hat{\sigma}^2 ) \\
+{\rm AIC} &=& \frac{1}{n \hat{\sigma}^2} ( {\rm RSS} + 2k \hat{\sigma}^2 ) = \frac{C_p}{\hat{\sigma}^2} \\
+{\rm BIC} &=& \frac{1}{n} ( {\rm RSS} + \log(n)k\hat{\sigma}^2 )
+\end{eqnarray*}
+RSS denotes the "residual sum-of-squares." The additive terms are penalty terms that increase with $k$ and thus act to prevent overfitting. $\hat{\sigma}^2$ is an estimate of the variance of the linear regression error term $\epsilon$, i.e., the variance of the scatter of data around the regression line (thus the metrics do implicitly assume constant error).
+
+BSS Metrics
+===
+
+Typically, $\log(n) > 2$, so BIC (or "Bayesian Information Criterion") imposes a larger penalty relative to $C_p$ (or "Mallow's $C_p$") or AIC (or "Akaike Information Criterion").
+
+$\Rightarrow$ BIC tends to underfit the data (i.e., select as optimal models with fewer variables)
+
+$\Rightarrow$ $C_p$ and AIC tend to overfit the data
+
+Which metric you choose is up to you; the choice should be motivated by your inferential goals.
+
+(What about adjusted $R^2$? The link between that metric and the validation-set MSE is not theoretically well motivated, so one should only use BIC or $C_p$/AIC to select the variable subset.)
+
+Forward and Backward Stepwise Selection
+===
+
+What if $p \gtrsim 25$, i.e., what if BSS is computationally infeasible? In that case, we might use either *forward* or *backward stepwise selection*. For instance:
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Algorithm_6.2.png){width=70%}</center>
+
+(Algorithm 6.2, *Introduction to Statistical Learning* by James et al.)
+
+In words, forward stepwise selection starts with no predictor variables and adds one at a time; backward stepwise selection is similar, except that it starts with the full set of predictors and takes one out at a time. One can apply forward and backward stepwise selection using `regsubsets()` or `bestglm()` as above, but with the arguments `method="forward"` or `method="backward"`.
+
+Forward and backward stepwise selection are examples of *greedy algorithms*: they make locally optimally choices that may collectively not yield a globally optimal solution. BSS is always to be preferred, if applying it is computationally feasible.

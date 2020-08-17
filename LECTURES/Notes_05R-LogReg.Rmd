@@ -1,0 +1,159 @@
+---
+title: "Logistic Regression"
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 5 Thursday -- Fall 2020"
+output: 
+  slidy_presentation:
+    font_adjustment: -1
+---
+
+The Setting
+===
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Figure_4.2.png){width=80%}</center>
+
+(Figure 4.2, *Introduction to Statistical Learning* by James et al.)
+
+- To the left is a linear regression fit. It is not limited to lie within the range [0,1].
+
+- To the right is a logisitic regression fit.
+
+Generalized Linear Models: Review
+===
+
+In conventional linear regression, we estimate the mean value of the response variable $Y$, given predictor variables $X_1,\ldots,X_p$:
+$$
+E[Y|X] = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n \,.
+$$
+In a generalized linear model, we include a "link function" $g$ that takes the linear model and transforms it:
+$$
+g(E[Y|X]) = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n \,.
+$$
+One uses the link function to reduce the range of possible values for $E[Y \vert X]$ from $(-\infty,\infty)$ to, e.g., $[0,1]$ or $[0,\infty)$, etc. 
+
+In addition, in a GLM you specify a "family," or the distribution that governs the observed response values. For instance, if the observed response values are zero and the positive integers, the family could be "Poisson." If they are just 0 and 1, the family is "binomial." Etc.
+
+Logistic Regression
+===
+
+For logistic regression, a conventional choice of link function is the *logit* function, which limits the range of the regression line to $[0,1]$:
+$$
+\log\left[\frac{E[Y \vert X]}{1-E[Y \vert X]}\right] = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n \,,
+$$
+so that
+$$
+E[Y \vert X] = \frac{e^{\beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n}}{1 + e^{\beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n}} \,.
+$$
+
+Assuming that we are dealing with two classes, the possible observed values for $Y$ are 0 and 1, so the family is `binomial`, i.e.,
+$$
+Y \vert X \sim {\rm Binomial}(n=1,p=E[Y\vert X]) \,.
+$$
+
+A major difference between linear and logistic regression is that the latter involves numerical optimization, i.e., instead of plugging into a formula, you have to use an iterative algorithm to find the $\beta$'s that maximize the likelihood function:
+$$
+\left( \prod_{i: Y_i=1} E[Y \vert X_i] \right) \left( \prod_{i: Y_i=0} (1 - E[Y \vert X_i]) \right) \,.
+$$
+Numerical optimization means the logistic regression runs more slowly than linear regression.
+
+Logistic Regression: Inference
+===
+
+A major motivating factor underlying the use of logistic regression, and indeed all generalized linear models, is that one can perform inference...e.g., how does the response change when we change a predictor by one unit?
+
+For linear regression, the answer to the question posed above is straightforward.
+
+For logistic regression, it is a little less straightforward, because the predicted response varies non-linearly with the predictor variable values. One convention is to fall back upon the concept of "odds."
+
+Let's say that the predicted response is 0.8 given a particular predictor variable value. (For simplicity, let's assume we have just one predictor variable.) That means that we expect that if we were to repeatedly sample response values given that predictor variable values, we would expect class 1 to appear four times as often as class 0:
+$$
+O = \frac{E[Y \vert X]}{1-E[Y \vert X]} = \frac{0.8}{1-0.8} = 4 = e^{\beta_0+\beta_1X} \,.
+$$
+Thus we say that for the given predictor variable value, the odds $O$ are 4 (or 4-1) in favor of class 1.
+
+How does the odds change if I change the value of a predictor variable by one unit?
+$$
+O_{\rm new} = e^{\beta_0+\beta_1(X+1)} = e^{\beta_0+\beta_1X}e^{\beta_1} = e^{\beta_1}O_{\rm old} \,.
+$$
+For every unit change in $X$, the odds change by a factor $e^{\beta_1}$.
+
+Logistic Regression: Output
+===
+
+```{r fig.height=6,fig.width=6,fig.align="center"}
+set.seed(101)
+x = 1:19
+y = rbinom(length(x),1,0.05*x)
+out.log = glm(y~x,family=binomial)
+suppressMessages(library(tidyverse))
+ggplot(data=data.frame(x=x,y=out.log$fitted.values),mapping=aes(x=x,y=y)) + geom_line(color="red") +
+  geom_point(data=data.frame(x=x,y=y),mapping=aes(x=x,y=y),color="blue") +
+  geom_abline(slope=0.05,intercept=0,color="green",linetype="dashed")
+```
+
+Logistic Regression: Output
+===
+
+```{r}
+summary(out.log)
+logLik(out.log)   # the maximum log-likelihood value
+```
+
+Logistic Regression: Output
+===
+
+```
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-1.4315  -0.4736  -0.1882   0.4954   1.8504 
+```
+The deviance residuals are, for each datum,
+$$
+d_i = \mbox{sign}(y_i-\hat{p}_i) \sqrt{-2[y_i \log \hat{p}_i + (1-y_i) \log (1 - \hat{p}_i)]}
+$$
+where $y_i$ is the $i^{\rm th}$ observed response and $\hat{p}_i$ is the estimated probability of success (i.e., the amplitude of the prediction curve for the $i^{\rm th}$ datum).
+
+```
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)  
+(Intercept)  -5.2800     2.3424  -2.254   0.0242 *
+x             0.4186     0.1843   2.271   0.0231 *
+```
+The intercept of the prediction curve is $e^{-5.28}$ and $O_{\rm new}/O_{\rm old} = e^{0.4186}$.
+
+```
+    Null deviance: 25.008  on 18  degrees of freedom
+Residual deviance: 14.236  on 17  degrees of freedom
+AIC: 18.236
+...
+'log Lik.' -7.117803 (df=2)
+```
+The maximum value of the log of the likelihood function is -7.118. The residual deviance is -2 times -7.118, or 14.236. The AIC is $2k - 2\log{\cal L}$ = $2 \cdot 2 - 2 \cdot (-7.118)$ = 18.336, where $k$ is the number of degrees of freedom (here, `df` = 2). These are all metrics of quality of fit of the model. In the context of this class, these are less important than test-set MSE. 
+
+Logistic Regression: Predictions
+===
+
+In this example, there was no training/testing split! In "real" analyses, there would be...you'd run on the model and generate test-set predictions via, e.g.,
+```
+resp.prob = predict(out.log,newdata=pred.test,type="response")
+resp.pred = rep(NA,length(resp.prob))
+for ( ii in 1:length(resp.prob) ) {
+  if (resp.prob[ii] > 0.5) {
+    resp.pred[ii] = "<class 0>"    # fill in name of class 0
+  } else {
+    resp.pred[ii] = "<class 1>"    # fill in name of class 1
+  }
+}
+```
+`resp.prob` is a number between 0 and 1. If that number is less than 0.5, we predict that the test datum is associated with class 0, otherwise we predict it is associated with class 1. In a future lecture, we will re-examine our use of 0.5 as a threshold for class splitting.
+
+Model Diagnostics: Classification
+===
+
+The most straightforward diagnostic to use to assess logistic regression or any other classification model is the *confusion matrix*, whose rows are predicted classes and whose columns are observed classes:
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/Classification_Diagnostic.png){width=30%}</center>
+
+There are *many* metrics associated with confusion matrices. The most basic is the *misclassification rate*, or MCR, which is the ratio of the sum of the off-diagonal values in the confusion matrix (top right and bottom left) to the overall table sum. (For the confusion matrix above, the MCR is 0.223). Other metrics include the *sensitivity* and *specificity*, etc.; for definitions of these and other metrics, see, e.g., [this web page](https://en.wikipedia.org/wiki/Confusion_matrix).
+
+We will expand upon classification diagnostics in a future lecture. 

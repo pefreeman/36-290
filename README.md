@@ -1,12 +1,13 @@
 
 This course is designed to introduce statistical research methodology--the procedures by which statisticians go about approaching and analyzing data--to early undergraduates. Students will learn basic concepts of statistical learning--inference vs. prediction, supervised vs. unsupervised learning, regression vs. classification, etc.--and will reinforce this knowledge by applying, e.g., linear regression, random forest, principal components analysis, and/or hierarchical clustering and more to datasets provided by the instructor. Students will also practice disseminating the results of their analyses via oral presentations and posters. Analyses will primarily be carried out using the `R` programming language, but with attention paid to how one would perform similar analyses using Python. Previous knowledge of `R` is not required for this course. Space is very limited; there will be an application process. The course is currently open to sophomore statistics students only.
 
-Fall 2020, Tu-Th 1:30 - 2:50 PM (subject to change), modality TBD
+Fall 2020, Tu-Th 1:30 - 2:50 PM, in-person + remote
 
 Note: lab materials are available upon request; as I wish to reuse (at least
-some elements of) them, they will not be posted here.
+some elements of) them, they will not be posted here. See the README file
+in the LECTURES directory for more information.
 
-### 2019 Schedule (to be updated for Fall 2020)
+### Preliminary 2020 Schedule
 
 | Week | Day | Topic |
 | ---- | --- | ----- |
@@ -30,17 +31,20 @@ some elements of) them, they will not be posted here.
 |      | Th  | KNN + lab |
 | 10   | Tu  | SVM + lab |
 |      | Th  | naive Bayes + lab |
-| 11   | Tu  | discussion of first DA draft + initial revision |
+| 11   | Tu  | TBD |
 |      | Th  | kernels: density estimation and regression + lab |
-| 12   | Tu  | reserved for project dataset work |
+| 12   | Tu  | TBD |
 |      | Th  | reserved for project dataset work |
-|      | Su  | second AD draft due |
-| 13   | Tu  | poster discussion + hackathon preliminaries |
-|      | Th  | hackathon presentations |
-| 14   | Tu  | cancelled: Thanksgiving |
+|      | Su  | second DA draft due |
+| 13   | Tu  | cancelled: Thanksgiving |
 |      | Th  | cancelled: Thanksgiving |
-| 15   | Tu  | reserved for group poster work |
-|      | Th  | post-course assessment + retrospective survey + poster work |
+| 14   | Tu  | reserved for final DA & poster work |
+|      | Th  | reserved for final DA & poster work |
+| 15   | Tu  | reserved for final DA & poster work |
+|      | Th  | reserved for final DA & poster work + |
+|      |     | post-course assessment + retrospective survey |
 |      | Fr  | final DA + final poster due |
-| F    | We  | departmental poster presentation |
-
+| F    | We  | TBD: departmental poster presentation |
+| May  | We  | TBD: CMU Meeting of the Minds |
+| 5    |     |   |
+| 2021 |     |   |

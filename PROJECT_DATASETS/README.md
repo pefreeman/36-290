@@ -24,4 +24,5 @@ project datasets will be placed here in the near future.
 14 Jul 2020: Moved the 2019 project datasets to EXAMPLE_DATASETS. New project
 datasets will be added over time.
 
-26 Aug 2020: Added SPIDERS_MASS dataset.
+26 Aug 2020: Added SPIDERS_MASS and ROSAT_CLASSIFY datasets.
+

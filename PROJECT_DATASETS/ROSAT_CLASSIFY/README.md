@@ -63,7 +63,7 @@ Way is a galaxy with a supermassive black hole in the center that presumably
 acted like an AGN in the past.
 - `STAR`: a ball of gas in the Milky Way. Stars are sample contaminants.
 
-Coarse groupings would be `QSO` and `BLAGN` versus `GALAXY` and `NLAGN` versus `STAR`. So while there are many analyses one could carry out here, a first one would be to learn a classifier that differentiates between the first two of these course groups, while taking into account class imbalance. Alternatives would be to see how well one can differentiate between the `QSO` and `BLAGN` classes, or the `GALAXY` and `NLAGN` classes, etc., while again taking class imbalance into account.
+Coarse groupings would be `QSO` and `BLAGN` versus `GALAXY` and `NLAGN` versus `STAR`. So while there are many analyses one could carry out here, a first one would be to learn a classifier that differentiates between the first two of these coarse groups, while taking into account class imbalance. Alternatives would be to see how well one can differentiate between the `QSO` and `BLAGN` classes, or the `GALAXY` and `NLAGN` classes, etc., while again taking class imbalance into account.
 
 The data model for this dataset is provided [here](https://data.sdss.org/datamodel/files/SPIDERS_ANALYSIS/VAC_spiders_2RXS_DR16.html), while
 the most up-to-date reference for this dataset is [Comparat et al. (2020)](https://arxiv.org/pdf/1912.03068.pdf).

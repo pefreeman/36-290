@@ -26,3 +26,5 @@ datasets will be added over time.
 
 26 Aug 2020: Added SPIDERS_MASS and ROSAT_CLASSIFY datasets.
 
+27 Aug 2020: Added GOODS-N_MASS dataset.
+

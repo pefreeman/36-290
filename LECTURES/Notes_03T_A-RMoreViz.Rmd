@@ -50,7 +50,8 @@ if ( require(GGally) == FALSE ) {
   install.packages("GGally",repos="https://cloud.r-project.org")
   library(GGally)
 }
-df %>% select(.,Gini,M20,C,A) %>% ggpairs(.,progress=FALSE,lower=list(combo=wrap("facethist", binwidth=0.8)),color="blue")
+# Updated in 2020. Setting the color not working properly: TBD
+df %>% select(.,Gini,M20,C,A) %>% ggpairs(.,progress=FALSE,lower=list(combo=wrap("facethist", binwidth=0.8)))
 ```
 
 3D Scatter Plot

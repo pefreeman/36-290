@@ -76,6 +76,7 @@ km.out = kmeans(data.frame(x,y),2,nstart=20)
 color = km.out$cluster
 ggplot(data=data.frame(x,y),mapping=aes(x=x,y=y)) + geom_point(color=color,shape=s)
 ```
+Note that here I do not utilize `scale()` (as in, e.g., `data=scale(data.frame(x,y))`) because the variances along the `x` and `y` directions are the same.
 
 K-Means Clustering: Output
 ===
@@ -147,7 +148,7 @@ The concept of "inversion" is shown on the next page. Note that the first three 
 Hierarchical Clustering: Linkage
 ===
 
-Single linkage:
+Single linkage (also called the "friend-of-friends" algorithm):
 
 <center>![](http://www.stat.cmu.edu/~pfreeman/single_linkage.png){width=30%}</center>
 

@@ -77,6 +77,26 @@ color = km.out$cluster
 ggplot(data=data.frame(x,y),mapping=aes(x=x,y=y)) + geom_point(color=color,shape=s)
 ```
 
+K-Means Clustering: Output
+===
+
+```{r}
+km.out
+```
+
+Look at the available components above:
+
+*totss*: compute the distances between all pairs of data, square the results, sum the squared quantities, and divide by the number of data points:
+
+```{r}
+km.out$totss
+sum(dist(data.frame(x,y))^2)/length(x) # gets the same result!
+```
+
+*tot.withinss* is the same, except we carry out the computation only within *each defined cluster*, and then sum the $k$ results. We want this to be small relative to `totss`.
+
+*betweenss* is `totss` - `tot.withinss`. We want this to be large relative to `totss`.
+
 K-Means Clustering: Example
 ===
 
@@ -85,7 +105,10 @@ What happens if we assume three clusters?
 km.out = kmeans(data.frame(x,y),3,nstart=20)
 color = km.out$cluster
 ggplot(data=data.frame(x,y),mapping=aes(x=x,y=y)) + geom_point(color=color,shape=s)
+km.out
 ```
+
+As $k \rightarrow \infty$, `(between_SS/total_SS)` goes to 100%. 100% is not necessarily your goal: you'd likely be "overfitting" the data at that point.
 
 Hierarchical Clustering
 ===
@@ -105,12 +128,42 @@ hc.out = hclust(dist(data.frame(x,y)),method="complete")
 plot(hc.out)
 ```
 
+Hierarchical Clustering: Tree Cutting
+===
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/cut_tree.png){width=50%}</center>
+
+(Credit goes to [Erik Velldal](https://www.uio.no/studier/emner/matnat/ifi/nedlagte-emner/INF4820/h12/undervisningsmateriale/06_clustering.pdf) for the above image.)
+
 Hierarchical Clustering: Linkage
 ===
 
 In agglomerative clustering, clusters are built up piece by piece by linking them together. There is no unique algorithm for how that linking is done! Note the descriptions below, and note that average and complete linkage are the algorithms most commonly used.
 
 <center>![](http://www.stat.cmu.edu/~pfreeman/linkage.png){width=60%}</center>
+
+The concept of "inversion" is shown on the next page. Note that the first three listed methods are "monotonic," meaning they cannot generate trees with inversions.
+
+Hierarchical Clustering: Linkage
+===
+
+Single linkage:
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/single_linkage.png){width=30%}</center>
+
+Complete linkage:
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/complete_linkage.png){width=30%}</center>
+
+Average linkage:
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/average_linkage.png){width=30%}</center>
+
+Centroid linkage (plus an example of "inversion"):
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/centroid_linkage.png){width=30%} ![](http://www.stat.cmu.edu/~pfreeman/centroid_inversion.png){width=30%}</center>
+
+(Credit goes to [Erik Velldal](https://www.uio.no/studier/emner/matnat/ifi/nedlagte-emner/INF4820/h12/undervisningsmateriale/06_clustering.pdf) for the images on this page.)
 
 K-Means and Hierarchical Clustering: Wrap-Up
 ===

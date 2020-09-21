@@ -36,6 +36,22 @@ In this example, the key word is "[hyper]plane." The main limitation of PCA is t
 
 (Another method for visualizing data in two dimensions that is all the rage right now is *tSNE*, or t-Distribution Stochastic Neighbor Embedding. We may return to look at tSNE before the end of the semester, if we've extra time.)
 
+PCA: It Won't Work Well For, e.g., the Swiss Roll
+===
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/swiss_roll.png){width=40%}</center>
+
+These data lie on a curving two-dimensional strip embedded in a three-dimensional space. Projecting these data to a two-dimensional plane or a one-dimensional line would effective randomize the statistical information they contain (i.e., the projection would not preserve the color ordering, which might represent the value of, say, a response variable).
+
+PCA: What It Is Not
+===
+
+PCA is one of a family of related algorithms commonly dubbed factor analyses, and, for instance, some use the phrases "PCA" and "factor analysis" interchangeably. Note that:
+
+1. The PCA algorithm is a *deterministic* algorithm. The algorithm does not take into account that the data to which it is applied are random variables; it just ingests the data values as they are and produces an answer, full stop.
+2. *Exploratory factor analysis* is a variant of PCA which *does* attempt to take randomness into account. The idea is to map the $p$ observed variables to $k < p$ factors; "exploratory" means we do not know *a priori* how that mapping may occur. Contrast this with...
+3. *Confirmatory factor analysis*, which basically adds on a hypothesis-testing layer for confirming that links actually exist between the $k$ factors uncovered by EFA and the $p$ original variables.
+
 PCA: Algorithm
 ===
 

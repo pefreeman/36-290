@@ -63,11 +63,15 @@ Model Assessment
 
 (Figure 2.9, *Introduction to Statistical Learning* by James et al.)
 
-The right panel shows a metric of model assessment, the mean squared error, as a function of flexibility for both a training dataset and a test dataset.
+The right panel shows a metric of model assessment, the mean squared error, as a function of flexibility for both a training dataset and a test dataset. The mean-squared error, or MSE, is
+$$
+MSE = \frac1n \sum_{i=1}^n (Y_i - \hat{Y}_i)^2
+$$
+where $Y_i$ is the value of the response for the $i^{\rm th}$ datum and $\hat{Y}_i$ is the predicted response value for the $i^{\rm}$ datum.
 
-The training error decreases as the model becomes more flexible; eventually the training error reaches zero as the model becomes so flexible as to pass exactly through every data point.
+The MSE computed on the training dataset decreases as the model becomes more flexible; eventually the training MSE reaches zero as the model becomes so flexible as to pass exactly through every data point.
 
-The test error, on the other hand, decreases while model flexibility increases until (approximately) the point that a good estimate of $f(X)$ is reached; afterwards it increases, since models that overfit the training data do not generalize well to the test data.
+The MSE computed on the test dataset, on the other hand, decreases while model flexibility increases until (approximately) the point that a good estimate of $f(X)$ is reached; afterwards it increases, since models that overfit the training data do not generalize well.
 
 Reproducibility
 ===
@@ -87,9 +91,9 @@ sample(10,3)     # voila: the same three numbers!
 Model Assessment Metrics: Loss and Risk
 ===
 
-A *loss function*, also known as a *cost function*, is a metric that represents the quality of fit of a model. 
+A *loss function*, also known as a *cost function*, is a metric that represents the quality of fit of a model. There is no unique loss function, but the most commonly used one is the quadratic loss function, based on the squared difference between model predictions and observed data. Because data are noisy, possible values of the loss follow a distribution...and the mean, or expected value, of this distribution is dubbed the *risk*.
 
-A common loss function in regression is a quadratic loss function based on the squared difference between model predictions and observed data. The *mean squared error*, or *MSE*, is the estimator associated with the quadratic loss function, and is the most commonly used metric for assessing regression models.
+The MSE, defined earlier, is an estimator of the risk for the quadratic loss function. It is the most commonly used metric for assessing regression models.
 
 For classification, the situation is not quite so clear-cut. Common metrics include the *misclassification rate*  or *MCR* (what percentage of predictions are wrong) and the *area under curve*. And note that interpretation can be affected by *class imbalance*: if two classes are equally represented in a dataset, an MCR of 2% is quite good; but if one class comprises 99% of the data, that 2% is no longer such a good result.
 

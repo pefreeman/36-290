@@ -14,7 +14,7 @@ To understand what generalized linear models are and how they work, we need to s
 
 A distribution is a mathematical function $f(x \vert \theta)$ where
 
-- $x$ may take on continuous values or discrete values over the domain of $f(x \vert \theta)$;
+- $x$ may take on continuous values and/or discrete values over the domain of $f(x \vert \theta)$;
 - $\theta$ is a set of parameters governing the shape of the distribution (e.g., $\theta = \{\mu,\sigma^2\}$ for a normal or Gaussian distribution);
 - the $\vert$ symbol means that the shape of the distribution is *conditional* on the values of $\theta$;
 - $f(x \vert \theta) \geq 0$ for all $x$; and
@@ -81,9 +81,9 @@ In typical linear regression, the distribution is normal and the domain of $Y \v
 What, however, happens if we know that
 
 1. the domain of observed values of the response is actually $[0,\infty]$? and
-2. the observed values are *discrete*, with possible values 0, 1, 2, ...
+2. the observed values are *discrete*, with possible values 0, 1, 2, ...?
 
-The normal distribution doesn't hold here. Any idea of what distribution could possibly govern $Y \vert x$? (Remember, we might not know truly how $Y \vert x$ is distributed, but any assumption we make has to fit with the limitations imposed by points 1 and 2 above.)
+The normal distribution doesn't hold here. Any idea of what distribution could possibly govern $Y \vert x$? (Remember, we might not know truly how $Y \vert x$ is distributed, but any assumption we make *should* fit with the limitations imposed by points 1 and 2 above.)
 
 Generalization: Poisson Regression
 ===
@@ -101,7 +101,7 @@ Let's keep things in the realm of one predictor. The linear function is
 $$
 \beta_0 + \beta_1 x \,.
 $$
-As noted above, the range of this function is $(-\infty,\infty)$. But in our Poisson regression example, we know that $Y$ cannot be negative, *so we need to tranform the linear function somehow* so that the domain of the transformed function is, in this case, $[0,\infty)$. (Or we could punt and use simple linear regression, but our results may not be meaningful, particularly if we estimate ${\hat Y}$ as being negative!)
+As noted above, the range of this function is $(-\infty,\infty)$. But in our Poisson regression example, we know that $Y$ cannot be negative, *so we need to tranform the linear function somehow* so that the domain of the transformed function is, in this case, $[0,\infty)$. (Or we could punt and use simple linear regression, hence the "*should* fit with the limitations" two slides back, but our results may not be meaningful, particularly if we estimate ${\hat Y}$ as being negative!)
 
 There is usually no unique transformation, but rather ones that are conventionally used. For this case:
 $$

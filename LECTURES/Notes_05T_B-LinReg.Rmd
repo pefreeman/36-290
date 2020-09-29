@@ -108,7 +108,7 @@ A useful diagnostic (for *any* regression analysis, not just a linear regression
 
 Key points:
 
-- If the data are completely uninformative, the data will lie on a horizontal locus: every input with generate the same prediction, the average observed value.
+- If the data are completely uninformative, the data will lie on a horizontal locus: every input will generate the same prediction, the average observed value.
 - If the model is "perfect," the data will lie along the diagonal line.
 - Real-life models will generate plots with behaviors between this two extremes, with additional intrinsic scatter.
 

@@ -128,7 +128,7 @@ AIC: 18.236
 ...
 'log Lik.' -7.117803 (df=2)
 ```
-The maximum value of the log of the likelihood function is -7.118. The residual deviance is -2 times -7.118, or 14.236. The AIC is $2k - 2\log{\cal L}$ = $2 \cdot 2 - 2 \cdot (-7.118)$ = 18.336, where $k$ is the number of degrees of freedom (here, `df` = 2). These are all metrics of quality of fit of the model. In the context of this class, these are less important than test-set MSE. 
+The maximum value of the log of the likelihood function is -7.118. The residual deviance is -2 times -7.118, or 14.236. The AIC is $2k - 2\log{\cal L}$ = $2 \cdot 2 - 2 \cdot (-7.118)$ = 18.236, where $k$ is the number of degrees of freedom (here, `df` = 2). These are all metrics of quality of fit of the model. In the context of this class, these are less important than test-set MSE. 
 
 Logistic Regression: Predictions
 ===
@@ -139,9 +139,9 @@ resp.prob = predict(out.log,newdata=pred.test,type="response")
 resp.pred = rep(NA,length(resp.prob))
 for ( ii in 1:length(resp.prob) ) {
   if (resp.prob[ii] > 0.5) {
-    resp.pred[ii] = "<class 0>"    # fill in name of class 0
-  } else {
     resp.pred[ii] = "<class 1>"    # fill in name of class 1
+  } else {
+    resp.pred[ii] = "<class 0>"    # fill in name of class 0
   }
 }
 ```

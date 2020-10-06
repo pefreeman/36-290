@@ -23,7 +23,7 @@ predictors. Why?
 
 2. *To improve model interpretability*. Eliminating uninformative predictors is obviously a good thing when your goal is to tell the story of how your predictors are associated with your response.
 
-Note that subset selection is useful and/or necessary if, e.g., $n \lesssim p$ (the sample size is roughly the same as, or less than, the number of predictor variables), but can still be helpful if $n > p$. If $n \gg p$, subset selection generally does not yield useful results.
+Note that subset selection is useful and/or necessary if, e.g., $n \lesssim p$ (the sample size is roughly the same as, or less than, the number of predictor variables), but can still be helpful if $n > p$. As $n/p \rightarrow \infty$, subset selection will yield less and less "useful" results, i.e., it will eliminate fewer and fewer variables. However, you should still try it even when $n \gg p$: you won't know for sure how useful subset selection is otherwise!
 
 Best Subset Selection
 ===
@@ -61,11 +61,11 @@ BSS Metrics
 
 Typically, $\log(n) > 2$, so BIC (or "Bayesian Information Criterion") imposes a larger penalty relative to $C_p$ (or "Mallow's $C_p$") or AIC (or "Akaike Information Criterion").
 
-$\Rightarrow$ BIC tends to underfit the data (i.e., select as optimal models with fewer variables)
+$\Rightarrow$ BIC tends to underfit the data (i.e., it will select as optimal those models that have fewer variables)
 
 $\Rightarrow$ $C_p$ and AIC tend to overfit the data
 
-Which metric you choose is up to you; the choice should be motivated by your inferential goals.
+Which metric you choose is up to you; the choice should be motivated by your inferential goals. (This is another one of those "Embrace the Ambiguity" moments.)
 
 (What about adjusted $R^2$? The link between that metric and the validation-set MSE is not theoretically well motivated, so one should only use BIC or $C_p$/AIC to select the variable subset.)
 

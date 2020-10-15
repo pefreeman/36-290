@@ -56,7 +56,7 @@ If you reduce the amount of material, the quasar "turns off." The last quasars
 turned off a long time ago, so the nearest quasars are far from Earth.
 - `BLAGN`/`NLAGN`: broad-line and narrow-line active galactic nuclei (AGN).
 AGN are fainter than quasars but there's still a lot of action in the very
-center of the galaxy. Broad-line vs. narrow-line is again a matter of the
+center of the galaxy. Broad-line vs. narrow-line is a matter of the
 observer's vantage point.
 - `GALAXY`: a vanilla galaxy with not much going on at the center. The Milky
 Way is a galaxy with a supermassive black hole in the center that presumably

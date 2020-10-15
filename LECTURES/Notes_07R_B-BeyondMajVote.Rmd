@@ -7,6 +7,9 @@ output:
     font_adjustment: -1
 ---
 
+Data
+===
+
 Below we load in some variable star data. Much of the detail is unimportant, and so is consigned to an "unechoed" code chunk. (You can see the contents of this chunk if you view the contents of the `R Markdown` file.)
 
 The data represent two classes: contact binary stars (or `CB`s) and non-contact binary stars (or `NON-CB`s). In pre-processing, we retain 5000 examples of each. The research question is: can we learn a model that discriminates between the two classes?
@@ -146,4 +149,17 @@ w = which.max(J)
 cat("Optimum threshold for random forest: ",roc.rf$thresholds[w],"\n")
 ```
 The value is close to 0.5, which is not surprising because our data had balanced classes. When the data feature unbalanced classes, optimal thresholds may differ greatly from 0.5.
+
+A Classification Analysis Workflow
+===
+
+We will wrap this up by stating what you might do when analyzing binary categorical response data:
+
+1. Learn a model as before and generate response class probabilities for each test-set datum using `predict()`.
+2. Using these probabilities as input, generate a ROC curve using the `roc()` function.
+3. Use the output from `roc()` to determine the optimal threshold for your chosen metric (e.g., Youden's $J$ statistic). (Report the metric and the threshold.)
+4. Rerun `predict()` with the optimal threshold encoded in the `cutoff` parameter and generate *class predictions* for each test-set datum.
+5. Use the output to create a confusion matrix (for visualization).
+
+Done.
 

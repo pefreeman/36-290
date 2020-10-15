@@ -53,19 +53,19 @@ $\Rightarrow$ Selecting a variable subset for each tree allows us to get around 
 Random Forest: Variable Importance
 ===
 
-| | Regression | Classification |
-| --- | --- | ---|
-| %IncMSE | YES (but only if importance = TRUE) | NO |
-| IncNodePurity | YES | NO  |
-| MeanDecreaseGini | NO | YES |
-| MeanDecreaseAccuracy | NO | YES |
+| | Regression | Classification | Preferred? |
+| --- | --- | --- | --- |
+| %IncMSE | YES (if importance = TRUE) | NO | $\checkmark$ |
+| IncNodePurity | YES | NO  |  |
+| MeanDecreaseGini | NO | YES |  |
+| MeanDecreaseAccuracy | NO | YES (if importance = TRUE) | $\checkmark$ |
 
 
 If we ignore the `type` argument of the `importance()` function:
 
-- Regression: if you do not specify `importance=TRUE`, only `IncNodePurity` is output. Otherwise `%IncMSE` is output in column 1, and `IncNodePurity` is output in column 2.
+- Regression: if you do not specify `importance=TRUE` in the call to `randomForest()`, only `IncNodePurity` is output. Otherwise `%IncMSE` is output in column 1, and `IncNodePurity` is output in column 2.
 
-- Classification: if you do not specify `importance=TRUE`, only `MeanDecreaseGini` is output. Otherwise $p+2$ columns are output; `MeanDecreaseAccuracy` is output in column $p+1$ and `MeanDecreaseGini` is output in column $p+2$.
+- Classification: if you do not specify `importance=TRUE` in the call to `randomForest()`, only `MeanDecreaseGini` is output. Otherwise $p+2$ columns are output, where $p$ is the number of levels for the response variable; `MeanDecreaseAccuracy` is output in column $p+1$ and `MeanDecreaseGini` is output in column $p+2$.
 
 Considering the `type` argument just complicates things. We won't cover it here.
 
@@ -74,7 +74,7 @@ Considering the `type` argument just complicates things. We won't cover it here.
 
 Algorithm:
 
-1. Grow forest. Using OOB data, compute the MSE. Call this MSE.min.
+1. Grow forest. Using "out-of-bag" (or OOB) data, compute the MSE. Call this MSE.min. (Out-of-bag data are the data that are left out of tree building, for each tree in the forest.)
 2. For each predictor variable in turn, randomly permute the data values, then repeat Step 1. Call this MSE.ii.
 3. %IncMSE for the ii^th variable is 100*(MSE.ii-MSE.min)/(MSE.min).
 
@@ -82,6 +82,7 @@ Algorithm:
 
 - This is analogous to `MeanDecreaseAccuracy`.
 
+<!--
 IncNodePurity: Increase in Node Purity
 ===
 
@@ -95,13 +96,16 @@ MeanDecreaseGini
 - How much does a split reduce the Gini coefficient? The output value represents the (weighted?) sum over all splits for that variable, averaged over all trees. That value will be larger or smaller depending on whether the dataset has a larger or smaller sample size.
 
 - This is analogous to `IncNodePurity`.
+-->
 
 MeanDecreaseAccuracy
 ===
 
-- How many more OOB observations are misclassified if we randomly permute the data in the named data frame column, as opposed to not permuting the data? (This is analogous to `%IncMSE`.)
+- How many more OOB observations are misclassified if we randomly permute the data in the named data frame column, as opposed to not permuting the data?
 
 - The magnitude will depend on sample size.
+
+- This is analogous to `%IncMSE`.
 
 Variable Importance Plot: Example
 ===

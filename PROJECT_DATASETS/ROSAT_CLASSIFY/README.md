@@ -36,7 +36,7 @@ Second, the terminology:
 2. magnitude: a logarithmic measure of source brightness...an increase in magnitude of 5 is equivalent to a factor of 100 **reduction** in brightness...the brightest stars in the night sky have magnitude approximately zero
 3. wavelength bands: `W1` and `u` and `rp`, etc., denote that the observation was made with a particular filter placed in the light beam of the telescope...for instance, the `g` filter only lets in light with wavelengths around 0.475 microns...see [this Wikipedia page](https://en.wikipedia.org/wiki/Photometric_system) for the effective wavelengths associated with each band
 4. model vs. fiber2: magnitudes can be estimated via a variety of algorithms...these happen to be names for two of these algorithms
-5. redshift: the ratio of the wavelength of a photon when it reaches Earth to when it was emitted, minus 1. Example: if a photon has wavelength 1 micron when emitted, and 3 microns when observed, the redshift is 3/1 - 1 = 2. A larger redshift means the object that emitted the photon is further away. Redshift is thus a directly observable proxy for the physical distance to a cluster.
+5. redshift: the ratio of the wavelength of a photon when it reaches Earth to when it was emitted, minus 1. Example: if a photon has wavelength 1 micron when emitted, and 3 microns when observed, the redshift is 3/1 - 1 = 2. A larger redshift means the object that emitted the photon is further away. Redshift is thus a directly observable proxy for the physical distance to an extragalactic object.
 
 The response variable is categorical and the value is assigned through the visual inspection of images and data. *Can we do better with statistical learning?*
 

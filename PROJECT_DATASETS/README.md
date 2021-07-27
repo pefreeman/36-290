@@ -11,7 +11,7 @@ Questions? pfreeman AT cmu DOT edu
 6 Aug 2018: Added EMLINE_MASS. This completes the set of four project datasets.
 
 16 Jul 2019: Moved the project datasets to the EXAMPLES directory. Four new
-project datasets will be placed here in the near future.
+project datasets for Fall 2019 will be placed here in the near future.
 
 16 Jul 2019: Added KEPLER_OBJS_INTEREST dataset.
 
@@ -22,9 +22,12 @@ project datasets will be placed here in the near future.
 18 Sep 2019: Added QUASAR_REDSHIFT dataset.
 
 14 Jul 2020: Moved the 2019 project datasets to EXAMPLE_DATASETS. New project
-datasets will be added over time.
+datasets for Fall 2020 will be added over time.
 
 26 Aug 2020: Added SPIDERS_MASS and ROSAT_CLASSIFY datasets.
 
 27 Aug 2020: Added GOODS-N_MASS dataset.
+
+27 Jul 2021: Moved the 2020 project datasets to EXAMPLE_DATASETS. New project
+datasets for Fall 2021 will be added over time.
 

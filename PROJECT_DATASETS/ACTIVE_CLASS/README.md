@@ -34,3 +34,5 @@ As is usual, you start with exploratory data analysis (EDA) and perhaps with pri
 
 Onwards!
 
+For more information, see [this paper by Kai Zhang et al.](https://arxiv.org/pdf/1908.07046.pdf).
+

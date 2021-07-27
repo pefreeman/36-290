@@ -31,5 +31,5 @@ datasets for Fall 2020 will be added over time.
 27 Jul 2021: Moved the 2020 project datasets to EXAMPLE_DATASETS. New project
 datasets for Fall 2021 will be added over time.
 
-27 Jul 2021: Added ACTIVE_CLASS dataset.
+27 Jul 2021: Added the ACTIVE_CLASS and WD_CLASS datasets.
 

@@ -17,20 +17,21 @@ in the LECTURES directory for more information.
 |      | Th  | R: ggplot + lab
 | 3    | Tu  | exploratory data analysis + lab |
 |      | Th  | K-means + hierarchical clustering + lab |
-| 4    | Tu  | PCA + lab |
+|      | Fr  | select semester project dataset |
+| 4    | Tu  | principal components analysis + lab |
 |      | Th  | model assessment + bias-variance tradeoff + lab |
-| 5    | Tu  | GLM + linear regression + lab |
+| 5    | Tu  | generalized linear models + linear regression + lab |
 |      | Th  | logistic regression + lab |
 |      | Fr  | first data analysis report due: EDA + PCA |
 | 6    | Tu  | best subset selection + lab |
 |      | Th  | penalized regression + lab |
-| 7    | Tu  | ML + trees + lab |
+| 7    | Tu  | machine learning + trees + lab |
 |      | Th  | no class: mid-semester break |
 | 8    | Tu  | Random Forest + lab |
 |      | Th  | boosting + lab |
 |      | Fr  | second data analysis report due: linear/logistic |
-| 9    | Tu  | KNN + lab |
-|      | Th  | SVM + lab |
+| 9    | Tu  | k nearest neighbors + lab |
+|      | Th  | support vector machine + lab |
 | 10   | Tu  | naive Bayes + lab |
 |      | Th  | kernels: density estimation and regression + lab |
 | 11   | Tu  | deep learning + lab |
@@ -40,12 +41,14 @@ in the LECTURES directory for more information.
 |      | Th  | team poster preparation |
 | 13   | Tu  | cancelled: Thanksgiving |
 |      | Th  | cancelled: Thanksgiving |
-| 14   | Tu  | reserved for final DA & poster work |
-|      | Th  | reserved for final DA & poster work |
+| 14   | Tu  | final data analysis report & team poster work |
+|      | Tu  | oral exam: high-level statistical learning concepts |
+|      | Th  | final data analysis report & team poster work |
+|      | Th  | oral exam: high-level statistical learning concepts |
 |      | Fr  | final data analysis report due |
 |      | Fr  | team poster due |
 |      | Fr  | USCLAP intermediate data analysis report due |
-| F    | We  | TBD: departmental poster presentation |
+| F    | We  | departmental poster presentation |
 |      |     |   |
-| May 4| We  | TBD: CMU Meeting of the Minds |
+| May 4| We  | CMU Meeting of the Minds poster presentation |
 | 2022 |     |   |

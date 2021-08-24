@@ -35,3 +35,5 @@ datasets for Fall 2021 will be added over time.
 
 23 Aug 2021: Added the FERMI dataset.
 
+24 Aug 2021: Added the GALEX dataset.
+

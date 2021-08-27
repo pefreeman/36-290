@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Statistical Learning: Introduction</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="36-290 – Introduction to Statistical Research Methodology" />
+    <script src="Notes_01T_B-StatLearning_files/header-attrs-2.10/header-attrs.js"></script>
+    <link href="Notes_01T_B-StatLearning_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="Notes_01T_B-StatLearning_files/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Statistical Learning: Introduction
+### 36-290 – Introduction to Statistical Research Methodology
+### Week 1 – Fall 2021
+
+---
+
+
+&lt;style type="text/css"&gt;
+.remark-slide-content {
+    font-size: 16px;
+    padding: 1em 4em 1em 4em;
+}
+.remark-code {
+    font-size: 16px;
+}
+&lt;/style&gt;
+
+&lt;style type="text/css"&gt;
+table {
+  font-size: 12px;
+}
+&lt;/style&gt;
+
+## Data Science: The Search for the Unicorn
+
+.center[![:scale 50%](http://www.stat.cmu.edu/~pfreeman/data_science.png)]
+
+(Credit: Computer Science Department, Luther College)
+
+---
+
+## What is Statistical Learning?
+
+Statistical learning is the process of ascertaining *associations* between groups of variables.
+
+Conventionally, we attempt to uncover associations between a set of *predictor* (or *independent* or *explanatory*) variables and a single *response* (or *dependent*) variable. (In the terminology of machine learning, this is dubbed *supervised* learning. We'll discuss unsupervised learning elsewhere.)
+
+Example: we measure the brightness of a galaxy at a set of `\(p\)` wavelengths. Can we uncover a meaningful relationship between these measurements (which are the predictors) and the galaxy's distance (which is the response)?
+
+Example: we are given receipts from purchases at Lowes and Home Depot. Can we apply text analysis techniques that would allow us to confidently predict which store a new receipt came from? (Let's assume the new receipt does not actually have the name of the store!) 
+
+---
+
+## Examples of Statistical Learning Algorithms
+
+You are probably already familiar with statistical learning, even if you did not know exactly what the phrase meant before now. Examples of statistical learning algorithms include:
+
+- Linear regression and its variants (e.g., variable selection methods)
+
+- Logistic regression
+
+- Generalized additive models
+
+- Trees and its variants (e.g., random forest, boosting)
+
+- Support vector machines
+
+- Deep learning (e.g., convolutional neural networks)
+
+Some of these are examples of *regression* models, in which we estimate the average value of the response variable *given* values for the predictor variables.
+
+And some are examples of *classification* models, in which we attempt to determine which of a set of discrete response variable classes is most likely, *given* values for the predictor variables.
+
+---
+
+## Which Algorithms Should I Apply in an Analysis?
+
+That depends somewhat on what you want to do. Let's start with the big picture: inference vs. prediction.
+
+Let `\(Y\)` represent our response variable, and `\(X\)` represent our predictors.
+Then our learned model will take the form
+$$
+\hat{Y}=\hat{f}(X)
+$$
+- (The hat represents an estimate, as opposed to the unknown true value or true function.)
+
+- If you care about the details of `\(\hat{f}(X)\)`, then you want to perform statistical inference.
+
+- If you treat `\(\hat{f}(X)\)` as a black-box, then your interest is in prediction.
+
+One can perform prediction with any algorithm. For inference, though, the choices are more limited.
+
+---
+
+## Model Flexibility vs. Interpretability
+
+.center[![:scale 50%](http://www.stat.cmu.edu/~pfreeman/flexibility.png)]
+
+(Figure 2.7, *Introduction to Statistical Learning* by James et al.)
+
+In general, there is a tradeoff between the "flexibility" of a model (i.e., how "curvy" it is) and how interpretable it is: the simpler the parametric form of the model, the simpler to interpret. (This in large part motivates the use of linear regression in practice.)
+
+So-called *parametric* models, for which we can write down a mathematical expression for `\(f(X)\)` *a priori* (as we can for linear regression), are inherently less flexible. Parametric models may be contrasted with *nonparametric* models, in which `\(f(X)\)` is estimated from the data themselves.
+
+If prediction is your goal, then your model can be as arbitrarily flexible as it needs to be. We'll discuss how one estimates the optimal amount of flexibility in another set of notes.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

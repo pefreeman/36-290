@@ -1,8 +1,9 @@
+
 For Fall 2021, first see below, then note that I am in the process of
 not only updating the notes, but also converting them to xaringan format
 (i.e., making the slides a bit prettier). The `HTML` versions of notes will be
 made available here, week by week, while the `R Markdown`-based source files
-will be made available in the `R_Markdown` folder.
+will be made available in the `R_Markdown` folder. (Also, if the `HTML` files do not work for you...see the analogous files in the `PDF` folder.)
 
 Feel free to peruse (and use) these. 
 

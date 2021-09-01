@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introduction to dplyr</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="36-290 – Statistical Research Methodology" />
+    <script src="Notes_02T-Rdplyr_files/header-attrs-2.10/header-attrs.js"></script>
+    <link href="Notes_02T-Rdplyr_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="Notes_02T-Rdplyr_files/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introduction to dplyr
+### 36-290 – Statistical Research Methodology
+### Week 2 Tuesday – Fall 2021
+
+---
+
+
+&lt;style type="text/css"&gt;
+.remark-slide-content {
+    font-size: 16px;
+    padding: 1em 4em 1em 4em;
+}
+.remark-code {
+    font-size: 12px;
+}
+&lt;/style&gt;
+
+&lt;style type="text/css"&gt;
+table {
+  font-size: 12px;
+}
+&lt;/style&gt;
+
+## A First Dataset
+
+Below we will read in data that are stored on disk in an ASCII (i.e., human-readable) file in csv (or "comma-separated values") format. csv is a common format, so even though we do not cover file I/O here, you may be able to utilize this example to start exploring your own data.
+
+```r
+df = read.csv("http://www.stat.cmu.edu/~pfreeman/GalaxyMass.csv")
+```
+The variable `df` stands for "data frame." (To be clear, you can use whatever name you want for the variable that points to the data frame.) A data frame is a table of data. Here, those data consist of 3456 rows and 10 columns:
+
+```r
+dim(df)
+```
+
+```
+## [1] 3456   10
+```
+
+---
+
+## A First Dataset
+
+In a data frame, each row corresponds to a single object under study. Here, those objects are galaxies. Each column, by contrast, represents a different measurement associated with the object under study. Here, there are ten. To see their names, use `names()`:
+
+```r
+names(df)
+```
+
+```
+##  [1] "field"  "Gini"   "M20"    "C"      "A"      "size"   "n"      "q"      "z.mode" "mass"
+```
+The first column represents a sector of the sky in which the galaxy lies. This is a *factor* variable, because it takes on a few discrete values that don't necessarily map to any particular numerical order:
+
+```r
+unique(df$field)
+```
+
+```
+## [1] "COSMOS" "EGS"    "GOODSN" "GOODSS" "UDS"
+```
+(Note the use of the dollar sign!) The next seven variables represent different statistics that summarize the galaxy's appearance. The penultimate variable is an estimate of galaxy distance, and the last is an estimate of galaxy mass.
+
+---
+
+## dplyr
+
+`dplyr` is a package within the larger `tidyverse` that one uses to manipulate data frames. In this set of notes, we will demonstrate basic data frame manipulation using `dplyr` functions and "pipes" (from the `magrittr` package).
+
+```r
+library(magrittr)
+library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following object is masked from 'package:MASS':
+## 
+##     select
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+We *could* just load the whole `tidyverse` instead, if we wish.
+
+---
+
+## dplyr 
+
+Think of data frames as nouns and `dplyr` functions as verbs, actions that you apply to the data frames. The following are the most basic `dplyr` verbs:
+
+- `slice()`: choose particular rows based on integer indexing 
+
+- `filter()`: choose particular rows based on logical criteria
+
+- `group_by()`: split the data frame into groups of rows based on factor variable values
+
+- `select()`: choose particular columns
+
+- `arrange()`: order rows by value of a column
+
+- `mutate()`: create new columns
+
+**NOTE**: calling `dplyr` verbs always outputs a new data frame; it *does not alter* the existing data frame.
+
+So to keep the changes, we have to reassign the data frame to be the output of the pipe, as we will see below.
+
+---
+
+## slice()
+
+Use `slice()` when you want to indicate certain row numbers need to be kept:
+
+
+```r
+df %&gt;% slice(.,c(7,8,14:15))
+```
+
+```
+##    field      Gini       M20        C          A      size      n      q z.mode     mass
+## 1 COSMOS 0.3319734 -1.294080 2.975167 0.09361421 0.8088991 0.7442 0.2343   1.96 10.68240
+## 2 COSMOS 0.3581774 -1.656436 3.730035 0.07200192 0.3814856 0.9118 0.5919   1.49  9.82788
+## 3 COSMOS 0.4839426 -1.609840 3.005040 0.17674453 0.4727087 1.3563 0.4967   1.69 10.18260
+## 4 COSMOS 0.3170045 -1.285205 2.929714 0.09791615 0.4604285 0.5090 0.3333   2.00  9.75075
+```
+The `%&gt;%` is a *pipe*. A pipe takes the output of one `R` command and uses it as input to a following command. Here, we pipe the output of `df` (which is simply the whole data frame) to the `slice()` function. The period in the `slice()` function indicates where the data frame would go if we were to simply call `slice()` without any piped input. (In other words, we could replace the construction above with `slice(df,c(7,8,14:15))`.) The `slice()` function then outputs the 7th, 8th, 14th, and 15th rows.
+
+---
+
+## slice()
+
+Slicing can also be done "negatively":
+
+```r
+df %&gt;% slice(.,-c(1:2,19:23)) %&gt;% nrow(.)
+```
+
+```
+## [1] 3449
+```
+Here, we *keep* all the rows *except* the 1st, 2nd, and 19th through 23rd rows, then check to see how many rows we have left.
+
+---
+
+## filter()
+
+Use `filter()` when you want to choose rows based on logical conditions:
+
+
+```r
+df %&gt;% filter(.,field=="COSMOS") %&gt;% head(.,2)
+```
+
+```
+##    field      Gini       M20        C         A      size      n      q z.mode     mass
+## 1 COSMOS 0.4132853 -1.132330 2.257530 0.1211518 0.7554244 0.3398 0.3579   2.04 10.55120
+## 2 COSMOS 0.4177935 -1.603147 2.970555 0.1002479 0.6537786 0.6722 0.8124   1.79  9.87608
+```
+
+```r
+df %&gt;% filter(.,mass&gt;10) %&gt;% nrow(.)
+```
+
+```
+## [1] 1862
+```
+
+```r
+df %&gt;% filter(.,(field=="GOODSS" &amp; mass&lt;10)) %&gt;% nrow(.)
+```
+
+```
+## [1] 276
+```
+Note the use of `&amp;` in the third example. This combines conditions via the logical `and`. `|` is the analogous symbol for `or`.
+
+---
+
+## group_by()
+
+Use `group_by()` to split your data frame into groups of rows based on the values of a factor variable. Note that `group_by()` in and of itself is only useful if you pipe its output to something else...like `summarize()`:
+
+```r
+df %&gt;% group_by(.,field) %&gt;% summarize(.,Mean=mean(mass),Number=n())
+```
+
+```
+## # A tibble: 5 × 3
+##   field   Mean Number
+##   &lt;chr&gt;  &lt;dbl&gt;  &lt;int&gt;
+## 1 COSMOS  10.2    905
+## 2 EGS     10.0    750
+## 3 GOODSN  10.1    464
+## 4 GOODSS  10.1    588
+## 5 UDS     10.2    749
+```
+Here, `Mean` is a column name used in the output data frame; what is shown in that column is the average value of the galaxy mass in each field. Similarly, `Number` shows the number of galaxies in the sample from each field.
+
+---
+
+## select()
+
+Use `select()` when you want to choose certain columns:
+
+
+```r
+df %&gt;% select(.,Gini,q,z.mode) %&gt;% slice(.,c(1:4))
+```
+
+```
+##        Gini      q z.mode
+## 1 0.4132853 0.3579   2.04
+## 2 0.4177935 0.8124   1.79
+## 3 0.4212831 0.3585   2.02
+## 4 0.4725081 0.4927   1.94
+```
+Note: here we chose columns *and* rows.
+
+---
+
+## arrange()
+
+Use `arrange()` to order rows by values of a column:
+
+```r
+df %&gt;% arrange(.,desc(mass)) %&gt;% select(.,C,A,z.mode) %&gt;% head(.,2)
+```
+
+```
+##          C         A z.mode
+## 1 3.594274 0.1711388   1.68
+## 2 3.655988 0.2116704   1.78
+```
+If you just do `arrange(.,mass)` then the masses will be ordered in *ascending* order, by default.
+
+---
+
+## mutate()
+
+Use `mutate()` when you want to create one or several columns:
+
+```r
+df %&gt;% mutate(.,mass.linear=10^mass) %&gt;% select(.,mass,mass.linear) %&gt;% arrange(.,mass) %&gt;% head(.,3)
+```
+
+```
+##    mass mass.linear
+## 1 8.285   192752491
+## 2 8.540   346736850
+## 3 8.550   354813389
+```
+
+---
+
+## Saving the New Data Frame
+
+As stated above, the original data frame is not altered in piping operations. To save the result of a series of piping operations, just use `=` or `-&gt;`:
+
+```r
+df.new = df %&gt;% filter(.,field=="EGS") %&gt;% select(.,z.mode,mass) 
+nrow(df.new)
+```
+
+```
+## [1] 750
+```
+
+```r
+df %&gt;% filter(.,field=="COSMOS") %&gt;% select(.,Gini,M20,C,A) -&gt; df.new
+nrow(df.new)
+```
+
+```
+## [1] 905
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -37,3 +37,5 @@ datasets for Fall 2021 will be added over time.
 
 24 Aug 2021: Added the GALEX dataset.
 
+15 Sep 2021: Added the TOI dataset.
+

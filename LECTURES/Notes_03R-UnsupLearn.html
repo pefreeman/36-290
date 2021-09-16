@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introduction to Unsupervised Learning</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="36-290 – Statistical Research Methodology" />
+    <script src="Notes_03R-UnsupLearn_files/header-attrs-2.10/header-attrs.js"></script>
+    <link href="Notes_03R-UnsupLearn_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="Notes_03R-UnsupLearn_files/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introduction to Unsupervised Learning
+### 36-290 – Statistical Research Methodology
+### Week 3 Thursday – Fall 2021
+
+---
+
+
+&lt;style type="text/css"&gt;
+.remark-slide-content {
+    font-size: 16px;
+    padding: 1em 4em 1em 4em;
+}
+.remark-code {
+    font-size: 12px;
+}
+&lt;/style&gt;
+
+&lt;style type="text/css"&gt;
+table {
+  font-size: 12px;
+}
+&lt;/style&gt;
+
+## The Setting
+
+The setting for *unsupervised learning* is that you have a collection of `\(p\)` measurements for each of `\(n\)` objects `\(X_1,\ldots,X_n\)`, where for a given object `\(i\)`,
+`$$X_{i1},X_{i2},\ldots,X_{ip} \sim P$$`
+where `\(P\)` is some `\(p\)`-dimensional distribution that we might not know much about *a priori*.
+
+The term "unsupervised" simply means that none of the variables are response variables, i.e., there are no labeled data.
+
+One can think of unsupervised learning as being an extension of EDA, where the goal is to discover interesting things about the data. The main, overriding issue with unsupervised learning is that *there are no universally accepted mechanisms for model assessment or selection, i.e., there is no unique right answer!*
+
+---
+
+## Clustering
+
+What is clustering?
+
+- It is the partitioning of data into homogeneous subgroups.
+
+What is the goal of clustering?
+
+- To define clusters for which the within-cluster variation is relatively small.
+
+...but what defines small?
+
+- Generally, we want small Euclidean distances between the points within a cluster, where the Euclidean distance between datum `\(i\)` and datum `\(j\)` is
+`$$d_{ij} = \sqrt{(X_{i1}-X_{j1})^2 + \cdots + (X_{ip}-X_{jp})^2}$$`
+Note that *units matter*! One axis might dominate the others when computing Euclidean distance because the range of values along that axis is much larger than the ranges along other axes. So it is a good idea to standardize each column of the input data frame so as to have mean zero and standard deviation one. See `scale()`.
+
+---
+
+## K-Means Clustering
+
+The algorithm for K-means clustering is straightforward:
+
+.center[
+  ![:scale 60%](http://www.stat.cmu.edu/~pfreeman/alg_10-1.png)
+]
+
+Note the following:
+
+- As stated above, there is no universally accepted metric that leads one to conclude that a particular value of `\(K\)` is the optimal one.
+
+- Your results will change from run to run unless you explicitly set the random number seed immediately before calling `kmeans()`.
+
+- Step 1 of the algorithm indicates that the algorithm randomly associates data to clusters. To mitigate this aspect of randomness, set the `nstart` argument in the function call to a large number (e.g., 50), and select the best result, with best result meaning the one with the smallest value of within-cluster variation.
+
+---
+
+## K-Means Clustering: Example
+
+Let's generate some fake data:
+
+```r
+set.seed(101)
+x = c(rnorm(30),rnorm(30,mean=2.25))
+y = c(rnorm(30),rnorm(30,mean=2.25))
+s = c(rep(2,30),rep(19,30))
+library(ggplot2)
+ggplot(data=data.frame(x,y),mapping=aes(x=x,y=y)) + 
+  geom_point(color="firebrick",shape=s)
+```
+
+&lt;img src="Notes_03R-UnsupLearn_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+## K-Means Clustering: Example
+
+What happens if we assume two clusters?
+
+```r
+km.out = kmeans(data.frame(x,y),2,nstart=20)
+color = km.out$cluster
+ggplot(data=data.frame(x,y),mapping=aes(x=x,y=y)) + 
+  geom_point(color=color,shape=s)
+```
+
+&lt;img src="Notes_03R-UnsupLearn_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+Note that here I do not utilize `scale()` (as in, e.g., `data=scale(data.frame(x,y))`) because the variances along the `x` and `y` directions are the same.
+
+---
+
+## K-Means Clustering: Output
+
+
+```r
+km.out
+```
+
+```
+## K-means clustering with 2 clusters of sizes 31, 29
+## 
+## Cluster means:
+##             x         y
+## 1 -0.07075038 0.1007261
+## 2  2.17206608 2.4048297
+## 
+## Clustering vector:
+##  [1] 1 1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 1 2 2 2
+## [38] 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2
+## 
+## Within cluster sum of squares by cluster:
+## [1] 50.24476 49.41480
+##  (between_SS / total_SS =  60.9 %)
+## 
+## Available components:
+## 
+## [1] "cluster"      "centers"      "totss"        "withinss"     "tot.withinss"
+## [6] "betweenss"    "size"         "iter"         "ifault"
+```
+
+---
+
+## K-Means Clustering: Output
+
+Look at the available components above:
+
+*totss*: compute the distances between all pairs of data, square the results, sum the squared quantities, and divide by the number of data points:
+
+
+```r
+km.out$totss
+```
+
+```
+## [1] 254.574
+```
+
+```r
+sum(dist(data.frame(x,y))^2)/length(x) # gets the same result!
+```
+
+```
+## [1] 254.574
+```
+
+*tot.withinss* is the same, except we carry out the computation only within *each defined cluster*, and then sum the `\(k\)` results. We want this to be small relative to `totss`.
+
+*betweenss* is `totss` - `tot.withinss`. We want this to be large relative to `totss`.
+
+---
+
+## K-Means Clustering: Example
+
+What happens if we assume three clusters?
+
+```r
+km.out = kmeans(data.frame(x,y),3,nstart=20)
+color = km.out$cluster
+ggplot(data=data.frame(x,y),mapping=aes(x=x,y=y)) + 
+  geom_point(color=color,shape=s)
+```
+
+&lt;img src="Notes_03R-UnsupLearn_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+## K-Means Clustering: Example
+
+
+```r
+km.out
+```
+
+```
+## K-means clustering with 3 clusters of sizes 16, 20, 24
+## 
+## Cluster means:
+##            x         y
+## 1  0.5848076  2.138317
+## 2  2.7232537  2.302554
+## 3 -0.1260559 -0.308399
+## 
+## Clustering vector:
+##  [1] 3 3 3 3 3 3 3 3 3 3 1 1 1 3 3 3 3 3 3 3 1 1 3 3 3 3 3 1 3 1 2 2 2 1 2 1 2
+## [38] 2 1 2 2 2 1 2 1 2 2 3 2 1 1 2 2 1 2 1 2 2 2 2
+## 
+## Within cluster sum of squares by cluster:
+## [1] 23.76652 15.06153 30.18075
+##  (between_SS / total_SS =  72.9 %)
+## 
+## Available components:
+## 
+## [1] "cluster"      "centers"      "totss"        "withinss"     "tot.withinss"
+## [6] "betweenss"    "size"         "iter"         "ifault"
+```
+
+As `\(k \rightarrow n\)`, `(between_SS/total_SS)` goes to 100%. 100% is not necessarily your goal: you'd be "overfitting" the data at that point. (Each point is its own "cluster.")
+
+---
+
+## Hierarchical Clustering
+
+The algorithm for hierarchical clustering is also straightforward:
+
+.center[
+  ![:scale 60%](http://www.stat.cmu.edu/~pfreeman/alg_10-2.png)
+]
+
+Note the "[t]reat each observation as its own cluster." This is specifically "bottom-up" or *agglomerative* clustering. A primary limitation of agglomerative clustering is that all clusters lie within other clusters (hence the name "hierarchical").
+
+---
+
+## Hierarchical Clustering: Example
+
+Here's an example of a dendrogram for complete-linkage hierarchical clustering. The "height" along the vertical axis at which two clusters fuse indicates dissimilarity...the higher the merge, the greater the dissimilarity between clusters. One extracts cluster members using, e.g., the `cutree()` function and processing its output.
+
+```r
+hc.out = hclust(dist(data.frame(x,y)),method="complete")
+plot(hc.out)
+```
+
+&lt;img src="Notes_03R-UnsupLearn_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Hierarchical Clustering: Tree Cutting
+
+.center[
+  ![:scale 50%](http://www.stat.cmu.edu/~pfreeman/cut_tree.png)
+]
+
+(Credit goes to [Erik Velldal](https://www.uio.no/studier/emner/matnat/ifi/nedlagte-emner/INF4820/h12/undervisningsmateriale/06_clustering.pdf) for the above image.)
+
+---
+
+## Hierarchical Clustering: Linkage
+
+In agglomerative clustering, clusters are built up piece by piece by linking them together. There is no unique algorithm for how that linking is done! Note the descriptions below, and note that average and complete linkage are the algorithms most commonly used.
+
+.center[
+  ![:scale 60%](http://www.stat.cmu.edu/~pfreeman/linkage.png)
+]
+
+The concept of "inversion" is shown on the next page. Note that the first three listed methods are "monotonic," meaning they cannot generate trees with inversions.
+
+---
+
+## Hierarchical Clustering: Linkage
+
+Single linkage (also called the "friend-of-friends" algorithm):
+
+.center[
+  ![:scale 30%](http://www.stat.cmu.edu/~pfreeman/single_linkage.png)
+]
+
+Complete linkage:
+
+.center[
+  ![:scale 30%](http://www.stat.cmu.edu/~pfreeman/complete_linkage.png)
+]
+
+---
+
+## Hierarchical Clustering: Linkage
+
+Average linkage:
+
+.center[
+  ![:scale 30%](http://www.stat.cmu.edu/~pfreeman/average_linkage.png)
+]
+
+Centroid linkage (plus an example of "inversion"):
+
+.center[
+  ![:scale 30%](http://www.stat.cmu.edu/~pfreeman/centroid_linkage.png) ![:scale 30%](http://www.stat.cmu.edu/~pfreeman/centroid_inversion.png)
+]
+
+(Credit goes to [Erik Velldal](https://www.uio.no/studier/emner/matnat/ifi/nedlagte-emner/INF4820/h12/undervisningsmateriale/06_clustering.pdf) for the images on this page.)
+
+---
+
+## K-Means and Hierarchical Clustering: Wrap-Up
+
+So: which of these should you use? Quoting ISLR: "we recommend performing clustering with different choices of [methods and parameters], and looking at the full set of results in order to see what patterns consistently emerge."
+
+That said:
+
+- In K-means, you specify the number of clusters before running the algorithm, as opposed to hierarchical clustering, where you specify the number of clusters afterwards by cutting across a dendrogram. 
+
+- Note that dendrograms can be really hard to read when the sample size is large.
+
+- Also note that all data are assigned to clusters in these algorithms. Maybe that shouldn't be the case. Another algorithm we do not cover is the *Gaussian Mixture Model* (GMM), which can be used to specify probabilities that an observation belongs to a particular group/cluster. Then you can decide how to assign observations. (See, e.g., the `GMM` function in the `ClusterR` package.)
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

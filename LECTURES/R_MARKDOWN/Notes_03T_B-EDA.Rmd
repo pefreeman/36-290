@@ -1,28 +1,47 @@
 ---
 title: "Exploratory Data Analysis"
 author: "36-290 -- Statistical Research Methodology"
-date: "Week 3 Tuesday -- Fall 2020"
-output: 
-  slidy_presentation:
-    font_adjustment: -1
+date: "Week 3 Tuesday -- Fall 2021"
+output:
+  xaringan::moon_reader:
+    yolo: false
+    nature:
+      beforeInit: "macros.js"
 ---
 
-What is Exploratory Data Analysis?
-===
+<style type="text/css">
+.remark-slide-content {
+    font-size: 16px;
+    padding: 1em 4em 1em 4em;
+}
+.remark-code {
+    font-size: 12px;
+}
+</style>
+
+```{css,echo=FALSE}
+table {
+  font-size: 12px;
+}
+```
+
+## What is Exploratory Data Analysis?
 
 The book [R for Data Science](https://r4ds.had.co.nz/) claims that exploratory data analysis, or EDA, is a "state of mind." More usefully, it states that "[y]our goal during EDA is to develop an understanding of your data."
 
 The EDA "cycle" looks something like the following:
 
-<center>![](http://www.stat.cmu.edu/~pfreeman/EDA_cycle.png){width=500px}</center>
+.center[![:scale 50%](http://www.stat.cmu.edu/~pfreeman/EDA_cycle.png)]
 
 The basic questions that one can ask are the following:
 
 - What type of variation do the variables exhibit?
+
 - What type of covariation do pairs of variables exhibit?
 
-The Limits of Exploratory Data Analysis
-===
+---
+
+## The Limits of Exploratory Data Analysis
 
 The basic questions on the previous slide motivate the statement of an important point. 
 
@@ -32,62 +51,75 @@ In other words: **EDA itself is not a replacement for statistical learning**.
 
 It is a means by which to build intuition prior to "turning the learning crank."
 
-The Limits of Exploratory Data Analysis
-===
+---
+
+## The Limits of Exploratory Data Analysis
 
 <center>
-![](http://www.stat.cmu.edu/~pfreeman/Fig_EDA_TwoVars_I.png){width=300px}
-
-![](http://www.stat.cmu.edu/~pfreeman/Fig_EDA_TwoVars_II.png){width=300px}
-![](http://www.stat.cmu.edu/~pfreeman/Fig_EDA_TwoVars_III.png){width=300px}
+<div class="row">
+  <img src="http://www.stat.cmu.edu/~pfreeman/Fig_EDA_TwoVars_I.png" style="width:30%">
+  <img src="http://www.stat.cmu.edu/~pfreeman/Fig_EDA_TwoVars_II.png" style="width:30%">
+  <img src="http://www.stat.cmu.edu/~pfreeman/Fig_EDA_TwoVars_III.png" style="width:30%">
+</div>
 </center>
-</center>
 
-The Limits of Exploratory Data Analysis
-===
+---
+
+## The Limits of Exploratory Data Analysis
 
 <center>
-![](http://www.stat.cmu.edu/~pfreeman/Fig_EDA_TwoVars_IV.png){width=300px}
-![](http://www.stat.cmu.edu/~pfreeman/Fig_EDA_TwoVars_V.png){width=300px}
-![](http://www.stat.cmu.edu/~pfreeman/Fig_EDA_TwoVars_VI.png){width=300px}
+<div class="row">
+  <img src="http://www.stat.cmu.edu/~pfreeman/Fig_EDA_TwoVars_IV.png" style="width:30%">
+  <img src="http://www.stat.cmu.edu/~pfreeman/Fig_EDA_TwoVars_V.png" style="width:30%">
+  <img src="http://www.stat.cmu.edu/~pfreeman/Fig_EDA_TwoVars_VI.png" style="width:30%">
+</div>
 </center>
 
-EDA: Single Variable
-===
+---
 
-<center>![](http://www.stat.cmu.edu/~pfreeman/EDA_OneVar.png){width=600px}</center>
+## EDA: Single Variable
 
-EDA: Histograms
-===
+.center[![](http://www.stat.cmu.edu/~pfreeman/EDA_OneVar.png)]
 
-<center>![](http://www.stat.cmu.edu/~pfreeman/EDA_HistBox.png){width=600px}</center>
+---
+
+## EDA: Histograms
+
+.center[![:scale 70%](http://www.stat.cmu.edu/~pfreeman/EDA_HistBox.png)]
 
 Some of the features of histograms to keep in mind:
 
 - They exhibit a nonparametric estimate of the shapes of underlying data distributions.
+
 - They are sensitive to bin width: too few bins, and noise and localized features are smoothed out; too many bins, and noise obscures the underlying distribution.
+
 - Unlike boxplots, histograms do not provide statistics and do not identify outliers by rule.
 
-EDA: Boxplots
-===
+---
 
-<center>![](http://www.stat.cmu.edu/~pfreeman/EDA_HistBox.png){width=600px}</center>
+## EDA: Boxplots
+
+.center[![:scale 70%](http://www.stat.cmu.edu/~pfreeman/EDA_HistBox.png)]
 
 Some of the features of boxplots to keep in mind:
 
-- They do not exhibit estimates of the shapes of underlying data distributions. (For that, use violin plots.)
+- They do not exhibit estimates of the shapes of underlying data distributions. (Use violin plots.)
+
 - They provide data statistics, such as the sample median.
+
 - They identify outliers by rule.
 
-EDA: Two Variables
-===
+---
 
-<center>![](http://www.stat.cmu.edu/~pfreeman/EDA_TwoVars.png){width=600px}</center>
+## EDA: Two Variables
+
+.center[![](http://www.stat.cmu.edu/~pfreeman/EDA_TwoVars.png)]
 
 A feature of scatter plots to keep in mind: they show the locations of samples from a bivariate distribution, but unlike histograms they do not estimate that distribution itself. (For that you might go beyond typical workaday EDA and utilize kernel density estimation, which we'll cover elsewhere.) Scatter plots *do*, however, indicate the level of covariance between two variables.
 
-EDA: Covariance and Correlation
-===
+---
+
+## EDA: Covariance and Correlation
 
 Covariance:
 
@@ -100,27 +132,38 @@ Correlation:
 Note that "uncorrelated" and "independent" are *not* synonymous. Uncorrelated means that there is no linear association between the variables; independent means that there is no association between the variables, period.
 
 <center>
-![](http://www.stat.cmu.edu/~pfreeman/Covar_Neg.png){width=300px}
-![](http://www.stat.cmu.edu/~pfreeman/Covar_Pos.png){width=300px}
+<div class="row">
+  <src img="http://www.stat.cmu.edu/~pfreeman/Covar_Neg.png" style="width:45%">
+  <src img="http://www.stat.cmu.edu/~pfreeman/Covar_Pos.png" style="width:45%">
+</div>
 </center>
 
-EDA: Scatter Plots
-===
+---
+
+## EDA: Scatter Plots
 
 Some tips of the trade to keep in mind when constructing scatter plots:
 
-- If your sample size is $\gtrsim$ 10$^4$, randomly sample $\sim$ 1000 points for plotting. Otherwise your computer may become very unhappy.
+- If your sample size is $\gtrsim 10^4$, randomly sample $\sim$ 1000 points for plotting. Otherwise your computer may become very unhappy.
+
 - To improve interpretability, mitigate the effect of point overlap by both reducing the size of points and altering point transparency.
+
 - Don't let outliers "drive the bus." Change the plot limits manually if necessary to zoom in on the bulk of the points. This also improves interpretability. (It's easier to interpret what you can see more clearly.)
 
-EDA: Questions to Ponder
-===
+---
+
+## EDA: Questions to Ponder
 
 - Could the pattern you observe arise by coincidence?
+
 - Is the observed pattern consistent, or does it change? (For instance, does variable y vary linearly with x, but only for some values of x and not for others?)
+
 - If you observe an association between variables, can you think of confounding variables that might cause the association? (Because *association is not causation*. Say it again. Say it many times. Good.)
+
 - How strong is the association between variables?
+
 - Does it appear that the assumptions that underlie some methods of statistical learning (e.g., constant variance in typical linear regression modeling) hold for your data?
+
 - Etc.
 
 But remember: even if you see no apparent associations, they may still exist in the data's native space! *EDA is not a replacement for statistical learning*. Say it again. Say it many times. Good.

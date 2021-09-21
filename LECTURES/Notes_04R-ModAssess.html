@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Model Assessment and Selection</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="36-290 – Statistical Research Methodology" />
+    <script src="Notes_04R-ModAssess_files/header-attrs-2.10/header-attrs.js"></script>
+    <link href="Notes_04R-ModAssess_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="Notes_04R-ModAssess_files/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Model Assessment and Selection
+### 36-290 – Statistical Research Methodology
+### Week 4 Thursday – Fall 2021
+
+---
+
+
+&lt;style type="text/css"&gt;
+.remark-slide-content {
+    font-size: 16px;
+    padding: 1em 4em 1em 4em;
+}
+.remark-code {
+    font-size: 12px;
+}
+&lt;/style&gt;
+
+&lt;style type="text/css"&gt;
+table {
+  font-size: 12px;
+}
+&lt;/style&gt;
+
+## What's the Difference?
+
+*Model Assessment*:
+
+- evaluating how well a learned model performs, via the use of a single-number metric
+
+*Model Selection*:
+
+- selecting the best model from a suite of learned models (e.g., linear regression, random forest, etc.)
+
+---
+
+## Model "Flexibility"
+
+.center[
+  ![:scale 30.5%](http://www.stat.cmu.edu/~pfreeman/modeldata.png)
+  ![:scale 30%](http://www.stat.cmu.edu/~pfreeman/modellinear.png)
+]
+
+The data (blue points) are generated from a smoothly varying non-linear model (black line), with random noise added:
+`$$Y = f(X) + \epsilon$$`
+
+In the right panel, the red line shows a simple linear regression fit to the data: linear regression involves the use of an inflexible, fully parametrized model, and thus it can neither provide a good estimate of `\(f(X)\)` nor can it "overfit" by modeling the noisy deviations of the data from `\(f(X)\)`.
+
+If data were repeatedly generated from the true model and fit via linear regression, we'd see that
+
+- The *average* estimated `\(y\)` value is offset from the truth. This is "high bias."
+
+- The variance in the estimated `\(y\)` values is relatively small. This is "low variance."
+
+---
+
+## Model "Flexibility"
+
+.center[
+  ![:scale 30%](http://www.stat.cmu.edu/~pfreeman/modelspline.png)
+  ![:scale 30%](http://www.stat.cmu.edu/~pfreeman/modeltooflex.png)
+]
+
+The right panel above shows a model that is overly flexible: it can provide a good estimate of `\(f(X)\)` but it goes too far and overfits by modeling the noisy deviations from `\(f(X)\)`. Such a model is not "generalizable": it will tend to do a bad job of predicting the response given a new predictor `\(X_o\)` that was not used in learning the model.
+
+The left panel shows a model that is close to being the optimal model: neither too flexible nor inflexible.
+
+If data were repeatedly generated from the true model and fit via the model at right, we'd see that
+
+- The *average* estimated `\(y\)` value approximately matches the truth. This is "low bias."
+
+- The variance in the estimated `\(y\)` values is relatively large. This is "high variance."
+
+---
+
+## How to Deal with Flexibility
+
+So...we want to learn a statistical model that provides a good estimate of `\(f(X)\)` without overfitting.
+
+There are two common approaches:
+
+- We can split the data into two groups: one used to train models, and another used to test them. By assessing models using "held-out" test set data, we act to ensure that we get a generalizable(!) estimate of `\(f(X)\)`.
+
+- We can repeat data splitting `\(k\)` times, with each datum being placed in the "held-out" group exactly once. This is *k-fold cross validation*. The general heuristic is that `\(k\)` should be 5 or 10.
+
+`\(k\)`-fold cross validation is the preferred approach, but the tradeoff is that CV analyses take `\({\sim}k\)` times longer than analyses that utilize data splitting.
+
+---
+
+## Model Assessment: Mean-Squared Error
+
+When the response variable is quantitative (like it is in the example in these notes), the most commonly used assessment metric is the mean-squared error, or MSE, computed with the *test-set data* only:
+`$$MSE = \frac1n \sum_{i=1}^n (Y_i - \hat{Y}_i)^2 \,.$$`
+`\(Y_i\)` is the value of the response for the `\(i^{\rm th}\)` test-set datum and `\(\hat{Y}_i\)` is the predicted response value for the `\(i^{\rm th}\)` test-set datum.
+
+It can be shown that:
+`$${\rm MSE} = {\rm (Bias)}^2 + {\rm Variance} \,.$$`
+Thus an overly inflexible model, a high-bias/low-variance model, will have a high MSE value, as will an overly flexible model (low-bias but high-variance). The best regression model is that which balances bias and variance!
+
+Let's step back for a moment. A *loss function*, also known as a *cost function*, is a metric that represents the quality of fit of a model. There is no unique loss function, but the most commonly used one is the quadratic loss function, based on the squared difference between model predictions and observed data. Because data are noisy, possible values of the loss follow a distribution...and the mean, or expected value, of this distribution is dubbed the *risk*.
+
+The MSE is an estimator of the risk for the quadratic loss function.
+
+---
+
+## Model Assessment: What About Classification?
+
+The MSE is an assessment metric that is appropriate to use when the response variable is quantitative.
+
+What about if the response variable is categorical? The choice of metric is unfortunately not quite so clear-cut. Common ones include the *misclassification rate*  or *MCR* (what percentage of predictions are wrong) and the *area under curve*. And note that interpretation can be affected by *class imbalance*: if two classes are equally represented in a dataset, an MCR of 2% is quite good; but if one class comprises 99% of the data, that 2% is no longer such a good result.
+
+We will return to discuss classification metrics in a future lecture.
+
+---
+
+## Reproducibility
+
+An important aspect of a statistical analysis is that it be reproducible. You should...
+
+1. Record your analysis in a notebook, via, e.g., `R Markdown` or `Jupyter`. A notebook should be complete such that if you give it and datasets to someone, that someone should be able to recreate the entire analysis and achieve the exact same results. To ensure the achivement of the exact same results, you should...
+
+2. Manually set the random-number generator seed before each instance of random sampling in your analysis (such as when you assign data to training or test sets, or to folds):
+
+```r
+set.seed(101)    # can be any number...
+sample(10,3)     # sample three numbers between 1 and 10 inclusive
+```
+
+```
+## [1]  9 10  6
+```
+
+```r
+set.seed(101)
+sample(10,3)     # voila: the same three numbers!
+```
+
+```
+## [1]  9 10  6
+```
+
+---
+
+## Model Selection
+
+As mentioned on the first slide, model selection is picking the best model from a suite of possible models. This can be as simple as picking the regression model with the best *MSE* or the classification model with the best *MCR*. However, two things must be kept in mind:
+
+1. To ensure an apples-to-apples comparison of metrics, every model should be learned using *the same training and test set data*! Do not resample the data between the time when you, e.g., perform linear regression and when you perform random forest.
+
+2. An assessment metric is a *random variable*, i.e., if you choose different data to be in your training set, the metric will be different.
+
+For regression, a third point should be kept in mind:
+
+3. A metric like the MSE is *unit-dependent*: an MSE of 0.001 in one analysis context is not necessarily better or worse than an MSE of 100 in a completely different analysis context.
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

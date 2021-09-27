@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Generalized Linear Models</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="36-290 – Statistical Research Methodology" />
+    <script src="Notes_05R_A-GLM_files/header-attrs-2.10/header-attrs.js"></script>
+    <link href="Notes_05R_A-GLM_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="Notes_05R_A-GLM_files/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Generalized Linear Models
+### 36-290 – Statistical Research Methodology
+### Week 5 Thursday – Fall 2021
+
+---
+
+
+&lt;style type="text/css"&gt;
+.remark-slide-content {
+    font-size: 16px;
+    padding: 1em 4em 1em 4em;
+}
+.remark-code {
+    font-size: 12px;
+}
+&lt;/style&gt;
+
+&lt;style type="text/css"&gt;
+table {
+  font-size: 12px;
+}
+&lt;/style&gt;
+
+## Probability Distributions
+
+A probability distribution is a mathematical function `\(f(y \vert \theta)\)` where
+
+- `\(y\)` may take on continuous values or discrete values;
+
+- `\(\theta\)` is a set of parameters governing the shape of the distribution (e.g., `\(\theta = \{\mu,\sigma^2\}\)` for a normal);
+
+- `\(f(y \vert \theta) \geq 0\)` for all `\(y\)`; and
+
+- `\(\sum_y f(y \vert \theta) = 1\)` or `\(\int_y f(y \vert \theta) = 1\)`.
+
+In practice, if `\(y\)` is continuously valued we often use `\(f\)` to denote the distribution (and call `\(f\)` a probability density function, or pdf), and if `\(y\)` is discretely valued we often use `\(p\)` (and call it a probability mass function, or pmf).
+
+![](Notes_05R_A-GLM_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;![](Notes_05R_A-GLM_files/figure-html/unnamed-chunk-2-2.png)&lt;!-- --&gt;
+
+---
+
+## Probability Distributions and Regression
+
+We are discussing distributions because in parameterized regression we make assumptions about how the response variable is distributed around the true regression line.
+
+For instance, for linear regression, we assume that for every `\(\mathbf{x}\)`...
+
+- the distribution governing the possible values of `\(Y\)` is a *normal* distribution;
+
+- the mean of the normal distribution is `\(E[Y \vert \mathbf{x}] = \beta_0 + \sum \beta_i x_i\)`; and
+
+- the variance of the normal distribution is `\(\sigma^2\)`, which is a constant (i.e., does not vary with `\(x\)`).
+
+What if we cannot (or more to the point, should not) assume that `\(Y \vert \mathbf{x} \sim \mathcal{N}(\beta_0 + \sum \beta_i x_i,\sigma^2)\)`? 
+
+This is where we enter the realm of the *generalized linear model*.
+
+---
+
+## Generalization: Example
+
+In typical linear regression, the domain of `\(Y \vert \mathbf{x}\)` is assumed to be `\((-\infty,\infty)\)`, matching the domain of the mean `\(\mu\)` of a normal distribution.
+
+What, however, happens if we observe that the response variable is, e.g., discretely valued, with possible values 0, 1, 2, ...?
+
+The normal distribution isn't the correct one to assume here. What would be the right distribution to assume? In practice, there will be many possibilities and we might not know which one is right, but any assumption we make *should* be consistent with how the response is empirically distributed.
+
+A suitable distribution in this case might be the *Poisson* distribution, which has a single parameter `\(\lambda\)`, which helpfully is the mean of the distribution (as well as the parameter which governs the distribution's shape).
+
+So, when we apply generalized linear regression in this context, we would identify the distribution family as Poisson.
+
+But there's another step in generalization...
+
+---
+
+## Generalization: Example
+
+Let's keep things in the realm of one predictor. The linear function is
+`$$\beta_0 + \beta_1 x \,.$$`
+As noted above, the range of this function is `\((-\infty,\infty)\)`. But in our Poisson regression example, we know that the mean `\(\lambda\)` cannot be negative, *so we need to transform the linear function* so that the domain of the transformed function is, in this case, `\([0,\infty)\)`. In other words, we need to find a function that maps the line defined above to `\(\lambda \vert x &gt; 0\)`. (Remember, we are modeling the mean...while the data are discrete, the mean is continuous as a function of `\(x\)`.)
+
+There is usually no unique transformation, but rather ones that are conventionally used. For this case:
+`$$g(\lambda \vert x) = \log(\lambda \vert x) = \beta_0 + \beta_1 x \,,$$`
+or
+`$$\lambda \vert x = e^{\beta_0 + \beta_1 x} \,.$$`
+`\(g(\cdot)\)` is dubbed the *link* function. 
+
+Note that with a GLM, we still can perform statistical inference, even with the transformation, because we can still determine  how the predicted response varies as a function of `\(x\)`.
+
+---
+
+## Finding the Optimal Coefficient Values
+
+Once the link function is set, we use numerical optimization to estimate `\(\beta_0\)` and `\(\beta_1\)` via maximization of the likelihood function:
+`$${\cal L} = \prod_{i=1}^{n_{\rm train}} p(Y_i \vert \lambda_i = e^{\beta_0 + \beta_1 x_i}) \,,$$`
+where `\(n_{\rm train}\)` is the number of (training set) data. (Note: we don't use numerical optimization in typical multiple linear regression because the optimal values are computed via formula. That's why you are only see the likelihood function now. Also note that what really gets computed is `\(L = \log{\cal L}\)`, the "log-likelihood.")
+
+Leaving many details under the rug: the maximum is the point at which the derivative of the likelihood function is zero. (You don't need to check the second derivative: wherever the derivative equals zero, it's a maximum value, not a minimum value.) 
+
+Numerical optimization can be slow. So, for instance, Poisson regression can take significantly longer to run than normal regression when datasets are large.
+
+---
+
+## Generalization: Exercises
+
+What family might be appropriate for...
+
+1. `\(Y \vert \mathbf{x}\)` continuous, but bounded between 0 and 1?
+
+2. `\(Y \vert \mathbf{x}\)` continuous, but bounded between 0 and `\(\infty\)`?
+
+3. `\(Y \vert \mathbf{x}\)` discrete, but can only take on the values 0 and 1?
+
+4. `\(Y \vert \mathbf{x}\)` discrete, but can only take on the values 0, 1, 2, ..., `\(n\)`?
+
+Case 3 is special, as you will soon see.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

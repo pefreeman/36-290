@@ -26,3 +26,5 @@ A question you might have immediately is "what is magnitude?" The magnitude is a
 Note that multicollinearity will be an issue here: a high g-band magnitude will tend to be associated with a high i-band magnitude, etc. In order to perform effective inference with these data, you would want to consider mapping the magnitudes to *colors*, which are differences in magnitude for adjacent bands: n-u, u-g, g-r, r-i, i-z. This will effectively mitigate some or all of the dataset's multicollinearity, but...you might pay a price with reduced predictive ability. If you do make the transformation to colors, you should at least check to see if the untransformed data give better predictions.
 
 Onwards!
+
+For more information about this data, see [this paper](https://arxiv.org/pdf/astro-ph/0611549.pdf) and [this web page](https://heasarc.gsfc.nasa.gov/W3Browse/galex/glxsdssqso.html).

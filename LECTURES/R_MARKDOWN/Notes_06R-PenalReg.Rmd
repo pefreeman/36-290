@@ -1,0 +1,170 @@
+---
+title: "Penalized Regression"
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 6 Thursday -- Fall 2021"
+output:
+  xaringan::moon_reader:
+    yolo: false
+    nature:
+      beforeInit: "macros.js"
+---
+
+<style type="text/css">
+.remark-slide-content {
+    font-size: 16px;
+    padding: 1em 4em 1em 4em;
+}
+.remark-code {
+    font-size: 12px;
+}
+</style>
+
+```{css,echo=FALSE}
+table {
+  font-size: 12px;
+}
+```
+
+## Shrinkage Methods
+
+The lasso and ridge regression are *shrinkage methods* that are alternatives to best subset selection (and to forward or backward stepwise selection). They differ from BSS in that they penalize models in a different manner than BSS does:
+\begin{eqnarray*}
+{\rm lasso:} &~& {\rm RSS} + \lambda \sum_{i=1}^p \vert \beta_i \vert \\
+{\rm ridge:} &~& {\rm RSS} + \lambda \sum_{i=1}^p \beta_i^2
+\end{eqnarray*}
+The effects of the additive penalty (or regularization) terms is dictated by the magnitude of the tuning parameter $\lambda$. If $\lambda \rightarrow 0$, then the penalty terms have no effect, and thus the use of lasso and ridge regression is equivalent to simply performing regular old linear regression.
+
+However, if $\lambda \rightarrow \infty$, then...
+
+- lasso: to balance the large value of $\lambda$, all the linear regression coefficients shrink toward zero, but some go to zero more quickly than others; hence lasso performs its own version of subset selection
+
+- ridge: to balance the large value of $\lambda$, all the coefficients shrink toward zero
+
+---
+
+## Shrinkage Methods
+
+.center[ 
+  ![:scale 39.5%](http://www.stat.cmu.edu/~pfreeman/Lasso.png) ![:scale 40%](http://www.stat.cmu.edu/~pfreeman/Ridge.png)
+]
+
+For example: note how the magnitude of the coefficient for `Income` trends as $\lambda \rightarrow \infty$.
+
+In the context of lasso, the coefficient goes to zero at $\lambda \sim 1000$; if the optimum value of $\lambda$ is larger, then `Income` would not be included in the learned model.
+
+In the context of ridge regression, the coefficient shrinks towards zero, but never actually reaches it. `Income` is always a variable in the learned model, regardless of the value of $\lambda$.
+
+While it may seem obvious that lasso is the preferred learning model (since it performs variable selection), realize that ridge regression may yield a small test-set MSE! Depending on circumstance, you may prefer to utilize a model that has $p$ predictor variables, but yields better predictions, over a model that has $k < p$ predictor variables, but yields worse predictions.
+
+---
+
+## Shrinkage Methods: Caveats
+
+- If you use either the lasso or ridge regression, you should *standardize* your data. While there is no unique way to standardize, the most common convention is to, within each column of data, compute and subtract off the sample mean, and compute and subtract off the sample standard deviation:
+$$\tilde{x}_i = \frac{x_i - \bar{x}_i}{s_{x,i}} \,.$$
+
+(Note that if you utilize the `glmnet` package, standardization is performed by default.)
+
+- $\lambda$ is a tuning parameter. This means that you have to split your training data into training and validation sets, or perform cross-validation on the training data.
+
+(Note that if you utilize the `glmnet` package, the `cv.glmnet()` package will perform the necessary cross-validation for you.)
+
+---
+
+## Lasso: Regression Example
+
+We will load up a 100-row dataset. `pred.train` and `pred.test` will have 70 and 30 rows respectively; `resp.train` and `resp.test`, 70 and 30 elements. We do this because lasso and ridge regression are most effective when $n \sim p$; applying these methods to a dataset with thousands of rows will not produce any interesting results!
+```{r echo=FALSE}
+load(url("https://raw.githubusercontent.com/pefreeman/36-290/master/EXAMPLE_DATASETS/PHOTO_MORPH/photo_morph.Rdata"))
+pred.train = predictors[1:70,]
+pred.test  = predictors[71:100,]
+resp.train = response[1:70]
+resp.test  = response[71:100]
+```
+
+We will utilize the `glmnet` package. The functions of `glmnet` are a tad "prickly" in that they don't abide by the usual rules that apply to model functions in `R`. Note that to perform ridge regression, one can perform all the same steps below, except changing the argument `alpha=1` to `alpha=0`.
+```{r fig.height=4,fig.width=4,fig.align="center"}
+suppressMessages(library(glmnet))
+x = model.matrix(resp.train~.,pred.train)[,-1] ; y = resp.train
+out.lasso = glmnet(x,y,alpha=1)  # alpha = 0: ridge regression; alpha = 1: lasso
+plot(out.lasso,xvar="lambda")
+```
+
+---
+
+## Lasso: Regression Example
+
+What is the optimal value of $\lambda$?
+```{r fig.height=4,fig.width=4,fig.align="center"}
+set.seed(301)  # cv.glmnet() performs random sampling...so set the seed!
+cv = cv.glmnet(x,y,alpha=1)
+plot(cv)
+cv$lambda.min ; log(cv$lambda.min)
+```
+
+---
+
+## Lasso: Regression Example
+
+Given the optimal value of $\lambda$, what variables are retained?
+```{r fig.height=4,fig.width=4,fig.align="center"}
+coef(out.lasso,cv$lambda.min)
+```
+We see that 7 of 16 predictor variables are selected.
+
+```{r}
+x.test    = model.matrix(resp.test~.,pred.test)[,-1]
+resp.pred = predict(out.lasso,s=cv$lambda.min,newx=x.test)
+mean((resp.pred-resp.test)^2)
+```
+
+---
+
+## Lasso: Classification Example
+
+The dataset that we read in now contains magnitude and redshift data for 500 quasars and 500 stars. The idea is to learn a classifier that can discriminate between quasars and stars with a low misclassification rate.
+```{r echo=FALSE}
+df = read.csv("https://raw.githubusercontent.com/pefreeman/PSU_2019/master/StarQuasar.csv")
+dim(df)
+names(df)
+set.seed(202)
+s = sample(nrow(df),0.7*nrow(df))
+pred.train = df[s,1:5]                                  # don't include redshift or redshift error!
+pred.test  = df[-s,1:5]
+resp.train = df[s,8]
+resp.test  = df[-s,8]
+```
+
+```{r fig.height=4,fig.width=4,fig.align="center"}
+x = model.matrix(resp.train~.,pred.train)[,-1]
+y = resp.train
+out.lasso = glmnet(x,y,alpha=1,family="binomial")  # note the "family" argument
+plot(out.lasso,xvar="lambda")
+```
+
+---
+
+## Lasso: Classification Example
+
+What is the optimal value of $\lambda$? (Here, it is very small...meaning there is no reason to favor lasso over logistic regression. This is not surprising given the relative size of the training set [700] to the number of predictors [5].)
+```{r fig.height=4,fig.width=4,fig.align="center"}
+set.seed(302)
+cv = cv.glmnet(x,y,alpha=1,family="binomial")
+plot(cv) ; cv$lambda.min ; log(cv$lambda.min)
+```
+
+---
+
+## Lasso: Classification Example
+
+...and as we can see, no variables were removed from the predictor set.
+```{r fig.height=4,fig.width=4,fig.align="center"}
+coef(out.lasso,cv$lambda.min)
+
+x.test    = model.matrix(resp.test~.,pred.test)[,-1]
+resp.prob = predict(out.lasso,s=cv$lambda.min,newx=x.test,type="response")
+resp.pred = ifelse(resp.prob>0.5,"STAR","QSO")
+mean(resp.pred!=resp.test) # basically the same as for logistic regression
+table(resp.pred,resp.test)
+```
+

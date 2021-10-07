@@ -83,7 +83,7 @@ resp.test  = response[71:100]
 ```
 
 We will utilize the `glmnet` package. The functions of `glmnet` are a tad "prickly" in that they don't abide by the usual rules that apply to model functions in `R`. Note that to perform ridge regression, one can perform all the same steps below, except changing the argument `alpha=1` to `alpha=0`.
-```{r fig.height=4,fig.width=4,fig.align="center"}
+```{r fig.height=3.5,fig.width=3.5,fig.align="center"}
 suppressMessages(library(glmnet))
 x = model.matrix(resp.train~.,pred.train)[,-1] ; y = resp.train
 out.lasso = glmnet(x,y,alpha=1)  # alpha = 0: ridge regression; alpha = 1: lasso

@@ -1,0 +1,159 @@
+---
+title: "Decision Trees"
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 7 Tuesday -- Fall 2021"
+output:
+  xaringan::moon_reader:
+    yolo: false
+    nature:
+      beforeInit: "macros.js"
+---
+
+<style type="text/css">
+.remark-slide-content {
+    font-size: 16px;
+    padding: 1em 4em 1em 4em;
+}
+.remark-code {
+    font-size: 12px;
+}
+</style>
+
+```{css,echo=FALSE}
+table {
+  font-size: 12px;
+}
+```
+
+## Decision Tree: In Words
+
+A decision tree is a model that segments a predictor space into disjoint $p$-dimensional hyper-rectangles, where $p$ is the number of predictor variables.
+
+- For a regression tree, the predicted response in a hyper-rectangle is the average of the response values in that hyper-rectangle.
+
+- For a classification tree, by default the predicted class in a hyper-rectangle is that class that is most represented in that hyper-rectangle.
+
+.center[
+  ![:scale 60%](http://www.stat.cmu.edu/~pfreeman/Figure_8.3.png)
+]
+(Figure 8.3, *Introduction to Statistical Learning* by James et al.)
+
+---
+
+## Decision Tree: Should I Use This Model?
+
+Yes:
+
+- It is easy to explain to non-statisticians.
+
+- It is easy to visualize (and thus easy to interpret).
+
+No:
+
+- Trees do not generalize as well as other models (i.e., they tend to have higher test-set MSEs).
+
+---
+
+## Decision Tree: Detail
+
+.center[
+  ![:scale 50%](http://www.stat.cmu.edu/~pfreeman/Algorithm_8.1.png)
+]
+(Algorithm 8.1, *Introduction to Statistical Learning* by James et al.)
+
+While the algorithm given above is for a regression tree, the classification tree algorithm is similar: instead of splits based on reduction of the residual sum-of-squares (RSS), the splits would be based on, e.g., reduction of the Gini coefficient, which is a metric that becomes smaller as each node becomes more "pure," i.e., populated more and more by objects of a single class.
+
+---
+
+## Decision Tree: Detail
+
+.center[
+  ![:scale 50%](http://www.stat.cmu.edu/~pfreeman/Algorithm_8.1.png)
+]
+(Algorithm 8.1, *Introduction to Statistical Learning* by James et al.)
+
+In a perfect world, one would systematically try all combinations of hyper-rectangles to see which combination minimizes values of RSS/Gini. However, our world is imperfect; the decision tree algorithm is a greedy algorithm which utilizes top-down *recursive binary splitting* to build the model: while each split is "locally optimal" (i.e., it causes the largest reduction in RSS or Gini), the final model may not be "globally optimal" (i.e., it may not have the smallest possible overall RSS or Gini value).
+
+To enlarge upon Step 1 above, splitting may cease not only when the number of data in a terminal node/hyper-rectangle is smaller than some threshold value, but also when the reduction in the RSS or Gini caused by splitting is smaller than some specified minimum value.
+---
+
+## Decision Tree: Detail
+
+.center[
+  ![:scale 50%](http://www.stat.cmu.edu/~pfreeman/Algorithm_8.1.png)
+]
+
+When building a decision tree, one must guard against overfitting. For instance, a tree that places a hyper-rectangle around each datum will be highly flexible (with training set MSE or MCR equal to zero!) but will not generalize well. One strategy for dealing with overfitting is to grow a large tree, then apply *cost complexity* (or *weakest link*) pruning (as described in Steps 2-4 above).
+
+---
+
+## Decision Tree: Example
+
+We will use the `ROSAT_CLASSIFY` dataset from the `GitHub` site. The response variable as given contains five levels; we filter the data so that it consists of 385 galaxies and 243 stars. There are 25 predictor variables.
+```{r echo=FALSE}
+file.path = "https://raw.githubusercontent.com/pefreeman/36-290/master/EXAMPLE_DATASETS/ROSAT_CLASSIFY/rosat_classify.Rdata"
+load(url(file.path))
+rm(file.path)
+w = which(response=="GALAXY  "|response=="STAR    ")
+df = data.frame(predictors[w,],"class"=response[w])
+suppressMessages(library(tidyverse))
+df %>% dplyr::select(.,-Z_BEST) -> df
+df$class = droplevels(df$class)
+set.seed(909)
+s = sample(nrow(df),round(0.7*nrow(df)))
+df.train = df[s,]
+df.test  = df[-s,]
+```
+
+```{r}
+library(rpart)
+rpart.out = rpart(class~.,data=df.train)
+class.prob = predict(rpart.out,newdata=df.test,type="prob")[,1]
+class.pred = ifelse(class.prob>(385/(385+243)),"GALAXY  ","STAR    ")
+mean(class.pred!=df.test$class)
+table(class.pred,df.test$class)
+```
+We see that a classification tree does much better than simply classifying all the data as galaxies (null MCR = 0.387).
+
+---
+
+## Decision Tree: Example
+
+Inference is done via examination of the (training set) tree.
+```{r fig.width=6,fig.height=6,fig.align="center"}
+library(rpart.plot)
+rpart.plot(rpart.out,extra=104)  # see the rpart.plot documentation
+```
+
+---
+
+## Decision Tree: Example
+
+```{r fig.width=4,fig.height=4,fig.align="center"}
+plotcp(rpart.out)
+```
+
+From the `plotcp()` documentation: "[a] good choice of `cp` for pruning is often the leftmost value for which the mean lies below the horizontal line."
+
+Here, that would be 0.045, which corresponds to 5 leaves.
+
+---
+
+## Decision Tree: Example
+
+```{r}
+rpart.pruned = prune(rpart.out,cp=0.045)
+class.prob = predict(rpart.pruned,newdata=df.test,type="prob")[,1]
+class.pred = ifelse(class.prob>(385/(385+243)),"GALAXY  ","STAR    ")
+mean(class.pred!=df.test$class)
+table(class.pred,df.test$class)
+```
+We note that the pruned-tree MCR is the same than the unpruned-tree MCR, so in this case pruning did not adversely impact the model's generalizability. (Good!) In general, explore pruning the tree to different extents if it is clear that pruning is a viable option (multiple points below the red line), but if it (markedly) increases the test-set MCR, ignore the pruning option.
+
+---
+
+## Decision Tree: Example
+
+```{r fig.width=5,fig.height=5,fig.align="center"}
+rpart.plot(rpart.pruned,extra=104)
+```

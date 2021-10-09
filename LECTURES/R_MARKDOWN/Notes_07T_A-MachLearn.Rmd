@@ -1,14 +1,31 @@
 ---
 title: "Machine Learning: Context"
 author: "36-290 -- Statistical Research Methodology"
-date: "Week 7 Tuesday -- Fall 2020"
-output: 
-  slidy_presentation:
-    font_adjustment: -1
+date: "Week 7 Tuesday -- Fall 2021"
+output:
+  xaringan::moon_reader:
+    yolo: false
+    nature:
+      beforeInit: "macros.js"
 ---
 
-What is Machine Learning?
-===
+<style type="text/css">
+.remark-slide-content {
+    font-size: 16px;
+    padding: 1em 4em 1em 4em;
+}
+.remark-code {
+    font-size: 12px;
+}
+</style>
+
+```{css,echo=FALSE}
+table {
+  font-size: 12px;
+}
+```
+
+## What is Machine Learning?
 
 The short version:
 
@@ -17,19 +34,24 @@ The short version:
 The longer version:
 
 - ML is the idea of constructing data-driven algorithms that *learn* the mapping between predictor variables and response variable(s). Specifically, we suppose no parametric form for the mapping *a priori*, even if technically one can write one down *a posteriori* (for example, by translating a tree model to a indicator-variable-filled mathematical expression).
+
 - Linear regression, for instance, is not a ML algorithm since we can write down the linear equation ahead of time, but random forest is a ML algorithm since we've no idea what the number of splits will end up being in each of its individual trees.
 
 However, note that despite the statement that ML "focuses on prediction," there are those (e.g., Cynthia Rudin) who are leading an effort towards developing "interpretable ML," for instance through the construction of globally optimal logical models (models akin to trees). (See, e.g., the `corels` package and its documentation.)
 
 - Note: do not confuse "interpretable ML" (which focuses on constructing interpretable models) with "explainable ML" (which are post-hoc attempts at explaining the results of black-box algorithms).
 
-Machine Learning: the Broader Context
-===
+---
 
-<center>![](http://www.stat.cmu.edu/~pfreeman/ml_broad_context.png){width=700px}</center>
+## Machine Learning: the Broader Context
 
-Machine Learning: Which Algorithm is Best?
-===
+.center[
+  ![:scale 80%](http://www.stat.cmu.edu/~pfreeman/ml_broad_context.png)
+]
+
+---
+
+## Machine Learning: Which Algorithm is Best?
 
 That's not actually the right question to ask.
 
@@ -39,10 +61,13 @@ The right question is ask is: why should I try different algorithms?
 
 The answer to that is that without superhuman powers, you cannot visualize the distribution of predictor variables in their native space. (Of course, you can visualize these data *in projection*, for instance when we perform exploratory data analysis.) And the performance of different algorithms will be predicated on how predictor data are distributed...
 
-Data Geometry
-===
+---
 
-<center>![](http://www.stat.cmu.edu/~pfreeman/data_geometry.png){width=700px}</center>
+## Data Geometry
+
+.center[
+  ![:scale 50%](http://www.stat.cmu.edu/~pfreeman/data_geometry.png)
+]
 
 The picture above shows data for which there are two predictor variables (along the x-axis and the y-axis) and for which the response variable is binary: x's and o's. An algorithm that utilizes linear boundaries or segments the plane into rectangles will do well given the data to the left, whereas an algorithm that utilizes circular boundaries will fare better given the data to the right.
 

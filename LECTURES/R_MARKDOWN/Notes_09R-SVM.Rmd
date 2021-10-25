@@ -31,6 +31,12 @@ A *support vector machine* is an enigmatically named machine learning algorithm 
 
 SVM transforms predictor data into a *higher-dimensional space* and in that space constructs a linear boundary (i.e., a hyperplane) that optimally separates instances of two classes. (Note that SVM is not designed to tackle analyses in which the response has more than two classes!)
 
+- Like a KNN model, an SVM model is a purely predictive model, useless for inference...
+
+- ...and like a KNN model, an SVM model utilizes distances between data, so scaling the predictor data is required...
+
+- ...and like a KNN model, an SVM model works only with quantitative predictor variables.
+
 Let's build up SVM qualitatively, one layer at a time...
 
 ---
@@ -150,3 +156,21 @@ resp.pred = predict(tune.out$best.model,newdata=df.test)
 (svm.poly.mcr = mean(resp.pred!=df.test$class))
 table(resp.pred,df.test$class)
 ```
+Note: if the optimal value is a boundary value (for instance, the optimal value of cost is 1 when the minimum value considered is 1), change the `ranges` and rerun the code. Also, note the very sparse nature of the `ranges` grid: this is to ensure a relatively small computation time. You can iterate if you want to hone in more precisely on the tuning parameter optimal values.
+
+---
+
+## SVM: Example With Radial Kernel
+
+```{r}
+set.seed(202)
+tune.out = tune(svm,class~.,data=df.train,kernel="radial",
+                ranges=list(cost=10^seq(-1,1,by=0.5),gamma=10^seq(-1,1,by=0.4)))
+cat("The estimated optimal values for C and gamma are ",as.numeric(tune.out$best.parameters),"\n")
+resp.pred = predict(tune.out$best.model,newdata=df.test)
+(svm.poly.mcr = mean(resp.pred!=df.test$class))
+table(resp.pred,df.test$class)
+```
+If you go back a few slides, you will see that a radial-kernel SVM model does **much** better than a logistic regression model, in terms of misclassification rate.
+
+Note that in our examples, we assumed that the class-separation threshold is 0.5 (which is OK because we had balanced classes). If you wish to create a ROC curve, you'd pass the argument `probability=TRUE` to *both* `tune()` and `predict()`; the output of the latter will be a matrix, and you'd extract the second column. You'd then pass that vector of numbers into `roc()`.

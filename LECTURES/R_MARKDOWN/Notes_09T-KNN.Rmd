@@ -1,7 +1,7 @@
 ---
 title: "K Nearest Neighbors"
 author: "36-290 -- Statistical Research Methodology"
-date: "Week 9 Tuesday -- Fall 2020"
+date: "Week 9 Tuesday -- Fall 2021"
 output:
   xaringan::moon_reader:
     yolo: false
@@ -162,6 +162,13 @@ Note that for classification:
 
 Note the `cl` argument for both: this is where `resp.train` goes (since `cl` means "class"). 
 
-`knn()` will output class predictions (based on majority vote!). Working with the output so as to, e.g., make a ROC curve for KNN is tricky but doable. If this is something you would like to do for your (classification-based) semester project, let me know and I can send you some code that turns `knn()` output into a Class 1 probability.
+`knn()` will output class predictions (based on majority vote!), unless you add the argument `prob=TRUE` to the call. If you want to compute, e.g., a ROC curve for a KNN classifier, use the (pseudo-)code below to extract the Class 1 probabilities. Once you have those, you can create the ROC curve, or a confusion matrix for a specific class-separation threshold, etc., etc.
+
+```
+knn.out = knn(...,prob=TRUE)
+knn.prob = attributes(knn.out)$prob
+w = which(knn.out=="<class 0>") # insert name of Class 0 here
+knn.prob[w] = 1 - knn.prob[w]   # knn.prob is now the Class 1 probability!
+```
 
 

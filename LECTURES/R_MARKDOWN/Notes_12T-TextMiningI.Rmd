@@ -1,0 +1,188 @@
+---
+title: "Text Analysis with R"
+author: "36-290 -- Statistical Research Methodology"
+date: "Week 12 Tuesday -- Fall 2021"
+output:
+  xaringan::moon_reader:
+    yolo: false
+    nature:
+      beforeInit: "macros.js"
+---
+
+<style type="text/css">
+.remark-slide-content {
+    font-size: 16px;
+    padding: 1em 4em 1em 4em;
+}
+.remark-code {
+    font-size: 12px;
+}
+</style>
+
+```{css,echo=FALSE}
+table {
+  font-size: 12px;
+}
+```
+
+## Let's Return to Where We Were...
+
+Let's process the Hillary Clinton speech from 2016...
+```{r}
+library(stopwords)
+lines            <- readLines("http://www.stat.cmu.edu/~pfreeman/clinton.txt")
+speech           <- tolower(unlist(strsplit(lines,split="[ ,!\\.]")))
+speech           <- speech[speech!=""]
+stopword.logical <- speech %in% stopwords("en")
+clinton          <- data.frame("word"=speech[stopword.logical==FALSE])
+head(clinton,2)
+```
+...and throw in Trump's 2016 speech too, because, why not?...
+```{r}
+lines            <- readLines("http://www.stat.cmu.edu/~pfreeman/trump.txt")
+speech           <- tolower(unlist(strsplit(lines,split="[ ,!\\.]")))
+speech           <- speech[speech!=""]
+stopword.logical <- speech %in% stopwords("en")
+trump            <- data.frame("word"=speech[stopword.logical==FALSE])
+head(trump,2)
+```
+
+In both cases, we remove (some) punctuation, remove empty strings, and remove stopwords according to one stopwords dictionary. We then list the words as single columns in data frames.
+
+---
+
+## tidytext
+
+In these notes, we will illustrate some basic text mining methods using functions in the `tidytext` package, and much of the code you will see has been constructed using the examples in the book [Text Mining with R](https://www.tidytextmining.com/index.html) by Silge & Robinson (along with some examples of `dplyr` function usage found on, e.g., StackOverflow).
+
+Silge & Robinson define the "tidy text" format as a table with one token per row. (A token is one unit of the text we will analyze. A token could be a single word, contiguous pairs of words, paragraphs, etc. For us, for now, it is a single word...hence the way we stored the words from the Clinton and Trump speeches on the previous page.)
+
+Below, we reformat the data so as to combine the words from Clinton and from Trump into a single data frame:
+```{r}
+suppressMessages(library(tidyverse))
+library(tidytext)
+
+clinton %>% mutate(speaker="HC") -> clinton
+trump   %>% mutate(speaker="DT") -> trump
+tidy_speech  <- rbind(clinton,trump)
+speech_words <- tidy_speech %>% count(speaker,word,sort=TRUE) # our workhorse dataframe
+head(speech_words)
+```
+
+---
+
+## Most-Commonly Used Words
+
+Below we show the 10 most-commonly used words in each speech.
+```{r}
+speech_words %>% filter(.,speaker=="HC") %>% head(.,10)
+speech_words %>% filter(.,speaker=="DT") %>% head(.,10)
+```
+
+---
+
+## Most-Commonly Used Words
+
+Here we visualize the 10 most-commonly used words in the Clinton speech. Note that if we leave the call to `mutate()` out, then the word order gets shifted into alphabetical order in the plot.
+```{r fig.width=5,fig.height=5,fig.align="center"}
+speech_words %>% filter(.,speaker=="HC") %>% head(.,10) %>%
+  mutate(.,word = reorder(word,n)) %>% 
+  ggplot(.,mapping=aes(n,word)) + geom_col(fill="seagreen") + labs(y=NULL)
+```
+
+---
+
+## Sentiment Analysis
+
+What is the emotional content of a document? Is the film review positive, or negative? What about the tweet? What about the speech? One way to mine information about emotional content is to apply methods of sentiment analysis.
+
+There are a multitude of ways to classify or quantify the sentiment of a word. The `tidytext` package interfaces with three general-purpose sentiment lexicons:
+
+- `AFINN`, which assigns each word a score of $-5$ (most negative) to $5$ (most positive)
+
+- `bing`, which categorizes a subset of words as positive or negative (other words are ignored)
+
+- `nrc`, which extracts words categorized as positive, negative, anger, anticipation, disgust, fear, joy, sadness, surprise, or trust (see example below)
+
+Sentiment analysis is, of course, going to be imperfect (for instance, the phrase "not good" may ultimately be categorized as positive because the "not" is ignored as a stopword), but it gives some notion of what sentiment underlies a piece of writing.
+
+---
+
+## Sentiment Analysis: Example
+
+As a first example, let's run the speeches through the `bing` lexicon to answer the question "who's more negative...Clinton or Trump?"
+```{r}
+dt_sentiment <- speech_words %>% filter(.,speaker=="DT") %>% 
+  inner_join(.,get_sentiments("bing")) %>% suppressMessages(.)
+table(dt_sentiment$sentiment)
+
+hc_sentiment <- speech_words %>% filter(.,speaker=="HC") %>% 
+  inner_join(.,get_sentiments("bing")) %>% suppressMessages(.)
+table(hc_sentiment$sentiment)
+```
+We see that Trump is more associated with negativity. However...
+```{r}
+x = matrix(c(110,116,112,91),nrow=2) # first column: positive scores / second column: negative scores
+prop.test(x)$p.value
+```
+...we cannot reject the null hypothesis that the proportion of negative words is equal for both speakers!
+
+---
+
+## Sentiment Analysis: Example
+
+What about anger? Who's more angry?
+```{r}
+library(textdata)
+speech_words %>% filter(.,speaker=="DT") %>% 
+  inner_join(.,get_sentiments("nrc")) %>% suppressMessages(.) %>%
+  filter(.,sentiment=="anger") -> trump.anger
+trump.anger %>% head(.) ; trump.anger %>% select(.,n) %>% sum(.)/nrow(trump)
+
+speech_words %>% filter(.,speaker=="HC") %>% 
+  inner_join(.,get_sentiments("nrc")) %>% suppressMessages(.) %>%
+  filter(.,sentiment=="anger") -> clinton.anger
+clinton.anger %>% head(.) ; clinton.anger %>% select(.,n) %>% sum(.)/nrow(clinton)
+```
+
+---
+
+## tf-idf
+
+In order to apply statistical learning methods to text data, we must map them from an unstructured state (their original format) to a structured state (a data table). One common means of doing this is to measure *term frequency* (tf), the proportion of time a token appears in a document, and *inverse-document frequency* (idf), defined as follows
+$$\log\left(\frac{n_{\rm documents~overall}}{n_{\rm documents~in~which~term~appears}}\right) \,.$$
+and multiplying them together. Intuition: if a term appears in all documents, the idf is zero, so the tf-idf score is zero. Higher scores mean the term was used frequently...but only in a subset of the documents.
+
+---
+
+## Computing and Visualizing tf-idf Scores
+
+To compute tf-idf scores, we use the `tidytext` function `bind_tf_idf()`.
+```{r fig.height=3.5,fig.align="center"}
+speech_words %>% bind_tf_idf(.,word,speaker,n) -> speech_tf_idf
+speech_tf_idf %>% arrange(.,desc(tf_idf)) %>% head(.,1)
+
+library(forcats)
+speech_tf_idf %>%
+  group_by(.,speaker) %>% slice_max(.,tf_idf,n=15) %>% ungroup(.) %>%
+  ggplot(.,aes(tf_idf,fct_reorder(word,tf_idf),fill=speaker)) +
+    geom_col(show.legend=FALSE) + facet_wrap(~speaker,ncol=2,scales="free") +
+    labs(x="tf-idf",y=NULL)
+```
+
+---
+
+## Correlation
+
+However, before we leave, we can use the term-frequency column in the `speech_tf_idf` data frame to ask to question of how correlated the two speeches are. We note that the number by itself is not as interesting as comparing correlations...for instance, would the correlation between an Obama speech and a Clinton speech be higher than that between an Obama speech and a Trump speech? (But remember...you really should perform a hypothesis test on the back end to test whether the two correlations are indeed statistically significantly different.)
+```{r}
+# The following code was shamelessly stolen from StackOverflow (and subsequently modified)
+tf <- pivot_wider(speech_tf_idf,names_from=speaker,values_from=tf) %>% 
+  select(.,-n,-idf,-tf_idf) %>%
+  gather(.,var,val,-word,na.rm=TRUE) %>%
+  group_by(.,word,var) %>%
+  distinct(.,val) %>%
+  spread(.,var,val) %>%
+  replace_na(.,list(HC=0,DT=0))
+cor(tf$HC,tf$DT)
+```
